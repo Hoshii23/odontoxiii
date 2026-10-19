@@ -1,6 +1,6 @@
-/* odontoxiii — original schematic teaching models, not patient scans.
- * Smooth parametric crowns, implicit root unions and depth-tested rendering.
- * No external requests, libraries, textures or models are required. */
+/* odontoxiii — CBCT-derived surfaces and separate schematic teaching geometry.
+ * Anatomy from 3Dentes by Nate Saindon, CC BY-NC 4.0.
+ * Provenance and modifications: assets/ANATOMY-LICENSE.md. */
 (()=>{
 'use strict';
 const TAU=Math.PI*2, clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
@@ -12,9 +12,26 @@ const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
 const normalize=a=>{const l=Math.hypot(...a)||1;return a.map(v=>v/l);};
 const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);
 const COLORS={esmalte:hex('#f3eee2'),dentina:hex('#d7ac68'),polpa:hex('#bc5354'),cemento:hex('#e6dcc6'),gengiva:hex('#bd7c79')};
-const TYPES={esmalte:1,dentina:2,polpa:3,cemento:4,gengiva:5};
+COLORS.instrumento=hex('#aab8be');
+const TYPES={esmalte:1,dentina:2,polpa:3,cemento:4,gengiva:5,instrumento:6};
 const LIGHT=normalize([-.55,.8,1]),FILL=normalize([.8,.05,.6]),HALF=normalize([LIGHT[0],LIGHT[1],LIGHT[2]+1]);
 const CACHE=new Map();
+const REAL_CACHE=new Map();
+function anatomicalTooth(type){
+ if(REAL_CACHE.has(type))return REAL_CACHE.get(type);
+ const source=window.DENTAL_MESHES?.[type];if(!source)return null;
+ const decode=(base,signed)=>{const raw=atob(base),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);const view=new DataView(bytes.buffer),a=[];for(let i=0;i<bytes.length;i+=2)a.push(signed?view.getInt16(i,true):view.getUint16(i,true));return a;};
+ const result=[];
+ for(const [layer,data]of Object.entries(source)){
+  const points=decode(data.p,true),ids=decode(data.t,false),vertices=[],tris=[];
+  for(let i=0;i<points.length;i+=3)vertices.push(points.slice(i,i+3).map(n=>n/10000));
+  for(let i=0;i<ids.length;i+=3)tris.push(ids.slice(i,i+3));
+  // A surface mesh represents the external hard tissue, not a measured
+  // dentin/cementum boundary. Internal colors remain a teaching convention.
+  result.push({vertices,tris,normals:smoothNormals(vertices,tris),layer,anatomical:true});
+ }
+ REAL_CACHE.set(type,result);return result;
+}
 const rootsFor=type=>type==='molar'?[
  {x:-.30,z:.22,l:1.87,r:.255,dx:-.22,dz:.13},
  {x:.31,z:.19,l:1.72,r:.235,dx:.22,dz:.10},
@@ -174,7 +191,45 @@ function transform(mesh,scale,pos,angle=0){
  const co=Math.cos(angle),si=Math.sin(angle),rotate=([x,y,z])=>[x*co+z*si,y,-x*si+z*co];
  return {...mesh,vertices:mesh.vertices.map(p=>rotate(p).map((v,i)=>v*scale+pos[i])),normals:mesh.normals.map(rotate)};
 }
-function gum(){return {...surface((u,v)=>{const a=-1.44+u*2.88,t=v*TAU,end=Math.sqrt(smooth(Math.min(u,1-u)/.035)),r=.35*Math.cos(t)*end;return[Math.sin(a)*(2.50+r),-.44+.54*Math.sin(t)*end,Math.cos(a)*(3.08+r)-1.65];},84,32,true),layer:'gengiva'};}
+function gum(){return {...surface((u,v)=>{const a=-1.44+u*2.88,t=v*TAU,end=Math.sqrt(smooth(Math.min(u,1-u)/.035)),r=.39*Math.cos(t)*end;return[Math.sin(a)*(2.50+r),-.64+.84*Math.sin(t)*end,Math.cos(a)*(3.08+r)-1.65];},84,32,true),layer:'gengiva'};}
+/* Instrument solids are illustrative geometry shown beside the model, never a
+ * needle placement guide. They use their own camera-fixed presentation frame. */
+function instrumentMeshes(id){
+ if(!id)return[];
+ const out=[],steel=hex('#aab7bc'),dark=hex('#42565d'),teal=hex('#398a81'),white=hex('#f4f5eb');
+ const add=(m,color=steel)=>out.push({...m,layer:'instrumento',color});
+ const rod=(a,b,r,color=steel)=>add(tube(t=>a.map((n,i)=>mix(n,b[i],t)),()=>r,18,20),color);
+ const start=[1.32,-1.18,1.1],end=[.78,-.15,1.1],tip=[.50,.40,1.1];
+ if(id==='bracket'){
+  add(ellipsoid([1.08,-.5,1.3],[.26,.23,.09]));
+  for(const y of[-.66,-.34])for(const x of[.94,1.22])add(ellipsoid([x,y,1.37],[.06,.08,.065]));
+  rod([.55,-.5,1.42],[1.60,-.5,1.42],.025);return out;
+ }
+ if(id==='isolamento'){
+  add(surface((u,v)=>[.5+u*1.1,-1.05+v*.9,1.1+.06*Math.sin(u*Math.PI)*Math.sin(v*Math.PI)],8,8),teal);
+  add(ellipsoid([1.04,-.58,1.2],[.19,.17,.04]),white);return out;
+ }
+ if(id==='carbono'){add(surface((u,v)=>[.55+u*1.15,-.7+v*.35,1.1],2,2),hex('#38558a'));rod(start,[1.3,-.55,1.08],.035);return out;}
+ rod(start,end,id==='anestesia'||id==='resina'?.105:.055,id==='escova'?teal:id==='resina'?white:steel);
+ if(id==='anestesia'){
+  rod(start,[1.53,-1.57,1.1],.035);
+  rod([1.25,-1.57,1.1],[1.78,-1.31,1.1],.045);
+  rod([.54,-.25,1.1],[1.00,-.02,1.1],.04);
+  rod(end,tip,.013);rod([1.17,-.9,1.19],[.91,-.39,1.19],.037,hex('#91b8bd'));return out;
+ }
+ for(let i=0;i<7;i++){const t=.12+i*.09,p=start.map((n,k)=>mix(n,end[k],t));add(ellipsoid(p,[.062,.024,.062]),dark);}
+ rod(end,tip,.025);
+ if(id==='espelho'){add(ellipsoid([.43,.51,1.1],[.22,.22,.038]));add(ellipsoid([.43,.51,1.14],[.188,.188,.017]),hex('#d9e6e8'));}
+ else if(id==='escova'){
+  add(ellipsoid([.46,.45,1.10],[.11,.24,.065]),teal);
+  for(let i=0;i<4;i++)for(let j=0;j<3;j++)rod([.40+j*.055,.31+i*.085,1.14],[.40+j*.055,.31+i*.085,1.27],.018,white);
+ }else if(id==='resina'||id==='fluor'){
+  rod(tip,[.38,.57,1.1],.034,id==='fluor'?hex('#d4b87b'):white);
+ }else if(id==='sonda'){
+  rod(tip,[.37,.58,1.1],.014);for(let i=0;i<3;i++)rod([.47-i*.03,.44+i*.04,1.1],[.45-i*.03,.47+i*.04,1.1],.019,dark);
+ }else add(ellipsoid([.46,.46,1.1],[.064,.10,.028]));
+ return out;
+}
 
 /* Cut faces are triangulated as ordered boundary loops. A centre fan is invalid
  * for concave outlines (especially root furcations) and creates visible spikes. */
@@ -242,8 +297,8 @@ function indexTriangles(data){
 const multiply=(a,b)=>{const c=new Float32Array(16);for(let j=0;j<4;j++)for(let i=0;i<4;i++)for(let k=0;k<4;k++)c[j*4+i]+=a[k*4+i]*b[j*4+k];return c;};
 class DentalAtlas{
  constructor(canvas,onError){
-  Object.assign(this,{canvas,onError,yaw:-.90,pitch:.28,zoom:5.4,model:'molar',cut:false,stage:0,exploded:false,ctx:null,gl:null,buffers:[],pointers:new Map(),frame:null,disposed:false});
-  this.visible={esmalte:true,dentina:true,polpa:true,cemento:true,gengiva:true};
+  Object.assign(this,{canvas,onError,yaw:-.90,pitch:.28,zoom:5.4,model:'molar',cut:false,stage:0,exploded:false,anatomical:true,ctx:null,gl:null,buffers:[],pointers:new Map(),frame:null,disposed:false});
+  this.visible={esmalte:true,dentina:true,polpa:true,cemento:true,gengiva:true,instrumento:true};this.clinical=0;this.instrument=null;
   try{
    this.gl=canvas.getContext('webgl',{antialias:true,alpha:false});
    if(this.gl)this.init();else{this.ctx=canvas.getContext('2d',{alpha:false});if(!this.ctx)throw Error('Visualização indisponível');}
@@ -253,18 +308,19 @@ class DentalAtlas{
  init(){
   const gl=this.gl;
   const vs=`attribute vec3 position;attribute vec3 normal;uniform mat4 projection;uniform mat4 modelView;uniform float offset;varying vec3 n;varying vec3 object;void main(){object=position;n=mat3(modelView)*normal;gl_Position=projection*modelView*vec4(position+vec3(offset,0.,0.),1.);}`;
-  const fs=`precision mediump float;uniform vec3 color;uniform float stage;uniform float layerType;varying vec3 n;varying vec3 object;
-   void main(){vec3 N=normalize(n);if(!gl_FrontFacing)N=-N;vec3 light=normalize(vec3(-.55,.8,1.));vec3 fill=normalize(vec3(.8,.05,.6));vec3 halfLight=normalize(light+vec3(0.,0.,1.));
+  const fs=`precision mediump float;uniform vec3 color;uniform float stage;uniform float layerType;uniform float clinical;uniform float crownTop;uniform float rootCut;varying vec3 n;varying vec3 object;
+   void main(){if(rootCut>.5&&layerType<5.&&object.y<0.)discard;vec3 N=normalize(n);if(!gl_FrontFacing)N=-N;vec3 light=normalize(vec3(-.55,.8,1.));vec3 fill=normalize(vec3(.8,.05,.6));vec3 halfLight=normalize(light+vec3(0.,0.,1.));
    float diffuse=max(dot(N,light),0.);float lighting=.55+.32*diffuse+.08*(N.y*.5+.5)+.08*max(dot(N,fill),0.);
-   float gloss=layerType==1.? .11:layerType==3.? .10:.045;float spec=pow(max(dot(N,halfLight),0.),layerType==1.?30.:22.)*gloss;
+   float gloss=layerType==6.?.45:layerType==1.? .14:layerType==3.? .10:.045;float spec=pow(max(dot(N,halfLight),0.),layerType==6.?64.:layerType==1.?30.:22.)*gloss;
    vec3 base=color;if(layerType==1.)base*=.96+.04*clamp((object.y-.1)/1.1,0.,1.);
    if(stage>.5){float depth=stage<1.5?.10:stage<2.5?.38:.70;float h=1.16-object.y;float r=.20*(1.-.42*clamp(h/depth,0.,1.));
     if(h>-.035&&h<depth&&length(object.xz)<r&&(layerType!=3.||stage>2.5))base=stage<1.5?vec3(.99,.99,.96):mix(base,vec3(.28,.13,.065),.86);}
+   if(clinical>3.5&&layerType<5.&&object.y>.15&&object.y<.28)base=mix(base,vec3(.74,.57,.31),.6);if(clinical>2.5&&clinical<3.5&&layerType<5.&&object.y>.45&&object.y<1.10&&abs(object.x)<.22&&object.z>.10)base=vec3(.99,.99,.96);if(clinical>.5&&clinical<2.5&&layerType<5.){float radius=length(object.xz);float edge=.25+.035*sin(object.x*45.)*cos(object.z*37.);if(object.y>crownTop-.33&&radius<edge){if(clinical<1.5)base=mix(base,vec3(.24,.12,.055),.88);else if(clinical<2.5)base=vec3(.95,.93,.84);else if(clinical<3.5)base=vec3(.99,.99,.96);else base=vec3(.74,.57,.31);}}
    gl_FragColor=vec4(base*lighting+vec3(spec),1.);}`;
   const shader=(kind,source)=>{const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;};
   const vert=shader(gl.VERTEX_SHADER,vs),frag=shader(gl.FRAGMENT_SHADER,fs);this.program=gl.createProgram();gl.attachShader(this.program,vert);gl.attachShader(this.program,frag);gl.linkProgram(this.program);gl.deleteShader(vert);gl.deleteShader(frag);
   if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw Error('Não foi possível iniciar o renderizador');
-  gl.useProgram(this.program);this.loc={};for(const name of ['projection','modelView','color','stage','layerType','offset'])this.loc[name]=gl.getUniformLocation(this.program,name);
+  gl.useProgram(this.program);this.loc={};for(const name of ['projection','modelView','color','stage','layerType','offset','clinical','crownTop','rootCut'])this.loc[name]=gl.getUniformLocation(this.program,name);
   for(const name of ['position','normal'])this.loc[name]=gl.getAttribLocation(this.program,name);
   gl.enable(gl.DEPTH_TEST);gl.clearColor(237/255,241/255,227/255,1);
  }
@@ -272,31 +328,38 @@ class DentalAtlas{
   if(!this.gl&&!this.ctx)return;
   for(const b of this.buffers)if(this.gl)this.gl.deleteBuffer(b.buffer);
   this.buffers=[];const detail=this.model==='arcada'?.63:1;let meshes=[];
+  this.usingAnatomy=this.anatomical&&!this.stage&&!(this.cut&&this.model!=='arcada')&&!this.exploded&&!!window.DENTAL_MESHES;
+  const getTooth=type=>this.usingAnatomy?anatomicalTooth(type)||tooth(type,detail):tooth(type,detail);
   if(this.model==='arcada'){
    for(let i=0;i<14;i++){
     const theta=-1.36+i*2.72/13,d=Math.abs(i-6.5),type=d<2?'incisivo':d<3?'canino':d<5?'premolar':'molar',scale=d<1?.48:d<2?.40:d<3?.47:d<5?.50:.47;
     const pos=[Math.sin(theta)*2.5,0,Math.cos(theta)*3.08-1.65];
-    meshes.push(...tooth(type,detail).map(m=>transform(m,scale,pos,theta)));
+    meshes.push(...getTooth(type).map(m=>transform(m,scale,pos,theta)));
    }
    meshes.push(gum());
-  }else meshes=tooth(this.model,detail);
+  }else meshes=[...getTooth(this.model)];
+  this.crownTop=meshes.reduce((top,m)=>m.layer==='gengiva'?top:m.vertices.reduce((v,p)=>Math.max(v,p[1]),top),-Infinity);
+  meshes.push(...instrumentMeshes(this.instrument));
   for(const mesh of meshes){
    const data=clip(mesh,this.cut&&this.model!=='arcada');let buffer=null;
    if(this.gl){buffer=this.gl.createBuffer();this.gl.bindBuffer(this.gl.ARRAY_BUFFER,buffer);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.STATIC_DRAW);}
    const geometry=this.cut&&this.model!=='arcada'?indexTriangles(data):mesh;
-   this.buffers.push({buffer,data,count:data.length/6,layer:mesh.layer,geometry});
+   this.buffers.push({buffer,data,count:data.length/6,layer:mesh.layer,geometry,anatomical:mesh.anatomical,color:mesh.color});
   }
-  this.request();
+  this.onRebuild?.();this.request();
  }
  setModel(model){if(!['molar','incisivo','arcada'].includes(model))return;const changed=this.model!==model;this.model=model;if(changed){this.exploded=false;this.reset();this.rebuild();}else this.request();}
  setCut(cut){cut=!!cut;if(this.cut===cut)return;this.cut=cut;if(cut&&this.model!=='arcada'){this.yaw=-1.12;this.pitch=.10;}this.rebuild();}
- setStage(stage){this.stage=clamp(Number(stage)||0,0,3);this.request();}
+ setStage(stage){const next=clamp(Number(stage)||0,0,3);if(this.stage===next)return;this.stage=next;this.rebuild();}
+ setAnatomical(value){if(this.anatomical===!!value)return;this.anatomical=!!value;this.rebuild();}
+ setInstrument(id){if(this.instrument===id)return;this.instrument=id;this.rebuild();}
+ setClinicalState(start,state){this.clinical=['restored','checked'].includes(state)?2:start==='white'?3:['clean','protected','hygiene'].includes(state)?0:start==='caries'||start==='fracture'?1:start==='plaque'?4:0;this.request();}
  setVisible(layer,value){if(layer in this.visible){this.visible[layer]=!!value;this.request();}}
- setExploded(value){this.exploded=!!value&&this.model!=='arcada';this.zoom=this.model==='arcada'?7.8:this.exploded?8.4:5.4;this.yaw=this.exploded?-.28:this.cut?-1.12:-.90;this.pitch=.14;this.request();}
+ setExploded(value){this.exploded=!!value&&this.model!=='arcada';this.zoom=this.model==='arcada'?7.8:this.exploded?8.4:5.4;this.yaw=this.exploded?-.28:this.cut?-1.12:-.90;this.pitch=.14;this.rebuild();}
  setView(view){const preset={perspectiva:[this.exploded?-.28:this.cut?-1.12:-.90,.28],frontal:[0,0],oclusal:[0,1.48],lateral:[-Math.PI/2,.02]};if(preset[view]){[this.yaw,this.pitch]=preset[view];this.request();}}
  reset(){this.yaw=this.model==='arcada'?0:this.exploded?-.28:this.cut?-1.12:-.90;this.pitch=this.model==='arcada'?.92:.28;this.zoom=this.model==='arcada'?7.8:this.exploded?8.4:5.4;this.request();}
  changeZoom(delta){this.zoom=clamp(this.zoom+delta,this.model==='arcada'?6:this.exploded?6.2:3.8,16);this.request();}
- occluded(layer){if(this.cut&&this.model!=='arcada'||this.exploded)return false;return layer==='polpa'&&this.visible.dentina||layer==='dentina'&&this.visible.esmalte&&this.visible.cemento;}
+ occluded(layer){if(this.usingAnatomy)return (layer==='polpa'||layer==='esmalte')&&this.visible.dentina;if(this.cut&&this.model!=='arcada'||this.exploded)return false;return layer==='polpa'&&this.visible.dentina||layer==='dentina'&&this.visible.esmalte&&this.visible.cemento;}
  offset(layer){return this.exploded?({esmalte:-1.65,cemento:-1.65,dentina:0,polpa:1.65}[layer]||0):0;}
  request(){if(!this.disposed&&this.frame===null)this.frame=requestAnimationFrame(()=>{this.frame=null;this.draw();});}
  size(software=false){const c=this.canvas,ratio=software?Math.min(devicePixelRatio||1,1.25,850/Math.max(c.clientWidth,1)):Math.min(devicePixelRatio||1,2);const w=Math.max(1,Math.round(c.clientWidth*ratio)),h=Math.max(1,Math.round(c.clientHeight*ratio));if(c.width!==w||c.height!==h){c.width=w;c.height=h;}return [w,h];}
@@ -307,11 +370,12 @@ class DentalAtlas{
   const cy=Math.cos(this.yaw),sy=Math.sin(this.yaw),cx=Math.cos(this.pitch),sx=Math.sin(this.pitch);
   const ry=new Float32Array([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1]),rx=new Float32Array([1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,.1,-this.zoom,1]);
   gl.viewport(0,0,w,h);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(this.program);
-  gl.uniformMatrix4fv(this.loc.projection,false,projection);gl.uniformMatrix4fv(this.loc.modelView,false,multiply(rx,ry));gl.uniform1f(this.loc.stage,this.model==='molar'?this.stage:0);
+  gl.uniformMatrix4fv(this.loc.projection,false,projection);gl.uniform1f(this.loc.stage,this.model==='molar'?this.stage:0);gl.uniform1f(this.loc.clinical,this.clinical);gl.uniform1f(this.loc.crownTop,this.crownTop);gl.uniform1f(this.loc.rootCut,this.model==='arcada'&&this.visible.gengiva?1:0);
   for(const mesh of this.buffers){if(!this.visible[mesh.layer]||this.occluded(mesh.layer))continue;
    gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);gl.enableVertexAttribArray(this.loc.position);gl.enableVertexAttribArray(this.loc.normal);
    gl.vertexAttribPointer(this.loc.position,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(this.loc.normal,3,gl.FLOAT,false,24,12);
-   gl.uniform3fv(this.loc.color,COLORS[mesh.layer]);gl.uniform1f(this.loc.layerType,TYPES[mesh.layer]);gl.uniform1f(this.loc.offset,this.offset(mesh.layer));gl.drawArrays(gl.TRIANGLES,0,mesh.count);
+   const tool=mesh.layer==='instrumento';gl.uniformMatrix4fv(this.loc.modelView,false,tool?new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,.1,-5.4,1]):multiply(rx,ry));
+   gl.uniform3fv(this.loc.color,mesh.color||(mesh.anatomical&&mesh.layer==='dentina'?COLORS.esmalte:COLORS[mesh.layer]));gl.uniform1f(this.loc.layerType,TYPES[mesh.layer]);gl.uniform1f(this.loc.offset,this.offset(mesh.layer));gl.drawArrays(gl.TRIANGLES,0,mesh.count);
   }
  }
  /* Per-pixel depth replaces painter sorting: inner dentin can never show through
@@ -326,11 +390,11 @@ class DentalAtlas{
   const stage=this.model==='molar'?this.stage:0;
   for(const mesh of this.buffers){
    if(!this.visible[mesh.layer]||this.occluded(mesh.layer))continue;
-   const base=COLORS[mesh.layer],offset=this.offset(mesh.layer),enamel=mesh.layer==='esmalte',gloss=enamel?.11:mesh.layer==='polpa'?.10:.045;
+   const base=mesh.color||(mesh.anatomical&&mesh.layer==='dentina'?COLORS.esmalte:COLORS[mesh.layer]),offset=this.offset(mesh.layer),enamel=mesh.layer==='esmalte',tool=mesh.layer==='instrumento',gloss=tool?.45:enamel?.14:mesh.layer==='polpa'?.10:.045;
    const geometry=mesh.geometry,projected=geometry.vertices.map((point,i)=>{
-    const p=rotate(point[0]+offset,point[1],point[2]),distance=this.zoom-p[2];
+    const p=tool?point:rotate(point[0]+offset,point[1],point[2]),distance=(tool?5.4:this.zoom)-p[2];
     if(distance<=.1)return null;
-    const n=normalize(rotate(...geometry.normals[i]));
+    const n=normalize(tool?geometry.normals[i]:rotate(...geometry.normals[i]));
     return {x:w/2+p[0]*f/distance,y:h/2-(p[1]+.1)*f/distance,z:1/distance,n,ox:point[0],oy:point[1],oz:point[2]};
    });
    for(const tri of geometry.tris){
@@ -343,12 +407,15 @@ class DentalAtlas{
     for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
      const px=x+.5,py=y+.5,b1=((px-A.x)*(C.y-A.y)-(py-A.y)*(C.x-A.x))*inv,b2=((B.x-A.x)*(py-A.y)-(B.y-A.y)*(px-A.x))*inv,b0=1-b1-b2;
      if(b0<-.00001||b1<-.00001||b2<-.00001)continue;
-     const z=b0*A.z+b1*B.z+b2*C.z,index=y*w+x;if(z<=depth[index])continue;depth[index]=z;
+     const z=b0*A.z+b1*B.z+b2*C.z,index=y*w+x;if(z<=depth[index])continue;
      const q0=b0*A.z/z,q1=b1*B.z/z,q2=b2*C.z/z,shade=q0*A.shade+q1*B.shade+q2*C.shade,spec=q0*A.spec+q1*B.spec+q2*C.spec;
      const oy=q0*A.oy+q1*B.oy+q2*C.oy,iv=enamel?.96+.04*clamp((oy-.1)/1.1):1;
+     if(this.model==='arcada'&&this.visible.gengiva&&TYPES[mesh.layer]<5&&oy<0)continue;
+     depth[index]=z;
      let lesion=0;
      if(stage){const h0=1.16-oy,extent=[0,.10,.38,.70][stage],radius=.20*(1-.42*clamp(h0/extent));if(h0>-.035&&h0<extent&&(mesh.layer!=='polpa'||stage===3)){const ox=q0*A.ox+q1*B.ox+q2*C.ox,oz=q0*A.oz+q1*B.oz+q2*C.oz;if(ox*ox+oz*oz<radius*radius)lesion=stage;}}
-     for(let c=0;c<3;c++){let color=base[c]*iv;if(lesion)color=lesion===1?[.99,.99,.96][c]:mix(color,[.28,.13,.065][c],.86);rgba[index*4+c]=Math.min(255,Math.round((color*shade+spec)*255));}
+     const ox=q0*A.ox+q1*B.ox+q2*C.ox,oz=q0*A.oz+q1*B.oz+q2*C.oz,clinical=this.clinical&&TYPES[mesh.layer]<5&&(this.clinical===4?oy>.15&&oy<.28:this.clinical===3?oy>.45&&oy<1.10&&Math.abs(ox)<.22&&oz>.10:oy>this.crownTop-.33&&Math.hypot(ox,oz)<.25+.035*Math.sin(ox*45)*Math.cos(oz*37));
+     for(let c=0;c<3;c++){let color=base[c]*iv;if(lesion)color=lesion===1?[.99,.99,.96][c]:mix(color,[.28,.13,.065][c],.86);if(clinical)color=this.clinical===1?mix(color,[.24,.12,.055][c],.88):this.clinical===2?[.95,.93,.84][c]:this.clinical===3?[.99,.99,.96][c]:[.74,.57,.31][c];rgba[index*4+c]=Math.min(255,Math.round((color*shade+spec)*255));}
     }
    }
   }

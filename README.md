@@ -1,19 +1,13 @@
 # odontoxiii
 
-Web app de estudo para a graduação em odontologia: aulas, atlas 3D manipulável, questões comentadas, flashcards e anotações.
+[Abra o app](https://hoshii23.github.io/odontoxiii/)
 
-## GitHub Pages
+Estudo de odontologia em português: 10 trilhas, 20 aulas, atlas 3D, questões, flashcards e jornada local.
 
-Os arquivos do aplicativo ficam na raiz do repositório. Em **Settings → Pages**, selecione **Deploy from a branch**, branch **main**, pasta **/ (root)** e salve.
+Em **Praticar → Entrar no consultório**, escolha ou sorteie seis atendimentos fictícios: cárie, restauração, aparelho, periodonto, dor e prevenção. Paciente com balões e voz opcional, decisões comentadas, bancada e resumo. Os procedimentos são didáticos e condensados, sem simular dose, punção ou habilidade clínica.
 
-Não há instalação ou etapa de build. As rotas usam fragmentos (#atlas, #estudar); os arquivos usam caminhos relativos, compatíveis com um site de projeto do GitHub Pages. O arquivo `.nojekyll` mantém a publicação estática.
+As superfícies de referência vêm de tomografia; arco, corte, lesões e instrumentos são ilustrações. **Anatomy from 3Dentes by Nate Saindon, CC BY-NC 4.0.** Uso não comercial com atribuição. [Licença e adaptações](assets/ANATOMY-LICENSE.md).
 
-A publicação pelo Pages torna o site acessível pela internet. Em um repositório público, o código também fica visível. Anotações e progresso ficam no navegador de cada pessoa, sem envio ao repositório.
+App estático, sem dependências de build. GitHub Pages publica a raiz de main. Abra index.html localmente ou sirva esta pasta por HTTP. Voz depende do navegador. Progresso fica no aparelho; o último caso simulado é salvo separadamente da exportação da jornada.
 
-## Uso e limites
-
-Abra a página no navegador. No atlas: arraste para girar, use pinça ou botões para ampliar, selecione vistas, corte ou separação de tecidos. As formas anatômicas são esquemáticas e não substituem um atlas de referência ou supervisão clínica. Modelos e conteúdo funcionam sem bibliotecas externas; a fonte web é opcional, com fallback local.
-
-## Verificação da versão
-
-Código de origem local: 1f79c1507fbb9cb5233beb5d842e71d597625b72. Os testes de fluxos, gestos e geometria passaram. Os shaders exatos foram compilados e cinco cenas foram renderizadas em Mesa GLES. Validação em Safari/iPad real permanece pendente.
+Verificações de lógica e renderizadores passaram em DOM mínimo e EGL/Canvas. Layout completo, voz nativa e interação em iPad real ainda não foram verificados. Imagens dos modelos não representam exames da personagem.
