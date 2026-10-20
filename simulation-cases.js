@@ -1,102 +1,149 @@
-/* Original fictional teaching cases. Sources are linked in each debrief. */
+/* Original fictional teaching cases. Four parallel options and individual rationales. */
 (()=>{
 'use strict';
 const ADA='https://www.ada.org/resources/research/science/evidence-based-dental-research/caries-management-clinical-practice-guidelines/';
 const EFP='https://www.efp.org/education/continuing-education/clinical-guidelines/';
 const AAO='https://aaoinfo.org/treatments/braces/';
 const AAE='https://www.aae.org/specialty/clinical-resources/';
-const choice=(title,speech,options,answer,why)=>({kind:'choice',title,speech,options,answer,why});
+const choice=(title,speech,stem,options,answer,reasons)=>({kind:'choice',title,speech,stem,options,answer,reasons,why:reasons[answer]});
 const tool=(title,speech,instrument,target,why,visual)=>({kind:'tool',title,speech,instrument,target,why,visual});
-const intake=()=>choice('Comece pela pessoa','Antes de começar, você pode me explicar o que vai fazer? Fico um pouco ansiosa na cadeira.',[
- 'Escutar a queixa, revisar saúde, medicamentos, alergias e combinar um sinal de pausa.',
- 'Escolher o material e iniciar para terminar mais rápido.',
- 'Pedir que espere em silêncio até acabar o exame.'
-],0,'A anamnese e a comunicação vêm antes da intervenção. Neste caso fictício, Lia nega alergias e uso de medicamentos, não relata condições sistêmicas relevantes e concorda com o exame. Isso não dispensa avaliação individual na clínica.');
-const anesthesia=()=>tool('Planeje o conforto antes de intervir','Podemos combinar que eu levanto a mão se sentir alguma coisa?','anestesia','campo','História revisada, consentimento e plano de anestesia conferidos. Na clínica, escolha do fármaco, dose, técnica e confirmação do efeito dependem de avaliação e supervisão. Aqui você apenas reconhece a etapa; não há treino de punção.','comfort');
-const isolation=()=>tool('Prepare o campo operatório','Tudo bem. Já entendi o que vamos fazer.','isolamento','dente','O isolamento favorece controle de umidade, visibilidade e proteção. A simulação resume a instalação; a técnica real requer treinamento.','isolated');
-const finish=()=>choice('Combine o acompanhamento','E o que eu preciso fazer depois da consulta?',[
- 'Dizer que nunca mais haverá problema nesse dente.',
- 'Orientar higiene e dieta conforme o risco, explicar sinais de alerta e combinar reavaliação.',
- 'Orientar retorno apenas se a dor ficar insuportável.'
-],1,'O atendimento inclui prevenção, orientação e acompanhamento individualizado. Uma restauração não elimina os fatores que mantêm a doença.');
+const intake=(caseId)=>{
+ const bank={
+ carie:choice('Acolhimento e história','Sinto uma fisgada com gelado. Precisa anestesiar logo?','A queixa é sensibilidade ao frio. Antes de planejar anestesia, qual conjunto de informações precisa ser esclarecido?',[
+ 'Frequência de escovação, consumo de açúcar e uso de dentifrício.',
+ 'História médica, medicamentos atuais e reações anteriores a anestésicos locais.',
+ 'Última radiografia, restaurações presentes e quantidade de dentes previamente tratados.',
+ 'Intensidade da dor, localização percebida e duração de cada episódio.'
+ ],1,['Esses fatores ajudam a avaliar o risco de cárie, mas não esclarecem a segurança do plano anestésico.','A revisão médica antecede o plano anestésico. Neste caso, Lia nega doenças relevantes, medicamentos e reações prévias; esses dados precisam ser confirmados em cada atendimento.','Os registros odontológicos ajudam no diagnóstico, mas não substituem a revisão médica antes da anestesia.','Caracterizar a dor é necessário ao diagnóstico; a pergunta pede os dados de segurança antes do plano anestésico.']),
+ restauracao:choice('Entenda a queixa','A ponta quebrou ontem. Não sei se o dente também trincou.','Qual pergunta ajuda mais a investigar comprometimento além do pequeno defeito visível?',[
+ 'Quando foi feita a restauração e qual profissional realizou o atendimento?',
+ 'Qual cor foi escolhida e quanto tempo durou o atendimento anterior?',
+ 'Há dor ao morder ou soltar, sensibilidade persistente ou trauma recente?',
+ 'Qual dentifrício utiliza e quantas vezes realiza higiene durante o dia?'
+ ],2,['Idade e histórico da restauração são úteis, mas os sintomas mecânicos e térmicos orientam a investigação de comprometimento adicional.','Cor e duração da consulta anterior não esclarecem sintomas compatíveis com trinca ou envolvimento pulpar.','Dor à carga ou à liberação, sintomas térmicos persistentes e trauma orientam a investigação de trinca e comprometimento pulpar; nenhum achado isolado fecha o diagnóstico.','Higiene integra a avaliação de risco, mas não é a informação mais discriminativa para a pergunta apresentada.']),
+ aparelho:choice('Conheça a expectativa','Quero alinhar os dentes, mas às vezes a gengiva sangra.','Qual informação acrescenta mais ao planejamento inicial diante dessa queixa?',[
+ 'Histórico de sangramento, rotina diária de higiene e tratamentos periodontais anteriores.',
+ 'Preferência por alinhadores, material dos acessórios e disponibilidade para fotografias clínicas.',
+ 'Tempo desejado de tratamento, expectativa estética e material de contenção preferido.',
+ 'Experiência de familiares, indicação de amigos e tipo de escova utilizado.'
+ ],0,['O histórico periodontal e a higiene ajudam a definir a avaliação e o preparo antes da movimentação dentária.','Preferências devem ser escutadas, mas não resolvem a suspeita de inflamação periodontal que interfere no planejamento.','Expectativas são relevantes; tipo de contenção e prazo não podem ser definidos antes de avaliar a saúde bucal.','Há informação de higiene nessa opção, mas história periodontal e sangramento são mais diretamente relevantes ao caso.']),
+ periodonto:choice('Investigue fatores de risco','Quase não sinto dor, mas vejo sangue ao escovar.','Além do exame periodontal, qual informação mais ajuda a estimar risco e progressão?',[
+ 'Rotina de higiene, experiência com escovas e consumo diário de alimentos açucarados.',
+ 'Frequência de sangramento, uso de bochechos e tempo gasto na higiene diária.',
+ 'Retenção local de biofilme, restaurações desadaptadas e uso de aparelhos durante anos.',
+ 'Uso de tabaco, diabetes e dentes perdidos por doença periodontal.'
+ ],3,['A higiene importa para o controle de biofilme, mas esses dados não substituem fatores associados ao risco e à progressão.','Sangramento e hábitos de higiene são relevantes à avaliação, mas este conjunto não esclarece os modificadores de risco sistêmicos e comportamentais solicitados.','Retenção de biofilme e restaurações desadaptadas são fatores locais relevantes. A pergunta destaca dados que acrescentem informação sobre risco e progressão além do exame periodontal.','Tabagismo, diabetes e histórico de perda por periodontite são informações relevantes à avaliação. Neste caso fictício, Lia nega tabagismo e diabetes; a avaliação completa ainda é necessária.']),
+ dor:choice('Faça a triagem','A dor me acordou. Estou preocupada de estar infeccionado.','Qual combinação de sinais exige atenção imediata para possível disseminação da infecção?',[
+ 'Dor ao frio persistente, sensibilidade ao doce e desconforto ao mastigar.',
+ 'Escurecimento dental, fratura de restauração e resposta aumentada ao teste térmico.',
+ 'Edema em progressão, febre e dificuldade para engolir ou para respirar.',
+ 'Dor espontânea à noite, irradiação para ouvido e resposta ao calor.'
+ ],2,['Esses sintomas exigem avaliação odontológica, mas não caracterizam por si sós disseminação com risco sistêmico.','Esses achados ajudam no diagnóstico local; não têm a prioridade dos sinais de comprometimento sistêmico ou via aérea.','Dificuldade para respirar ou engolir com edema progressivo exige avaliação urgente. Lia nega esses sinais neste caso, permitindo prosseguir com a investigação local.','Sintomas pulpares podem ser intensos e requerem cuidado, mas não equivalem aos sinais de disseminação perguntados.']),
+ prevencao:choice('Investigue o contexto','A mancha apareceu perto da gengiva e não está doendo.','Qual dado comportamental acrescenta mais à avaliação de risco de cárie?',[
+ 'Açúcar entre refeições e uso de flúor na rotina de higiene.',
+ 'Uso de alimentos frios, percepção de dor e histórico de sensibilidade.',
+ 'Tempo desde o último clareamento e tonalidade desejada para os dentes.',
+ 'Uso de escova elétrica, rotina de bochecho e preferência por dentifrícios.'
+ ],0,['Frequência de açúcares e exposição a fluoretos ajudam a compor o risco, junto de história de doença, saliva e exame.','Temperatura dos alimentos pode provocar sintomas, mas não é o dado mais relevante ao risco de cárie.','Clareamento entra no histórico e no diagnóstico diferencial; não é o principal dado de risco solicitado.','O equipamento e a marca não dizem, sozinhos, se há remoção eficaz de biofilme ou exposição adequada a fluoretos.'])
+ };return bank[caseId];
+};
+const anesthesia=()=>tool('Planeje o conforto','Podemos combinar que eu levanto a mão se incomodar?','anestesia','campo','História, consentimento e plano conferidos. A ação representa planejamento; fármaco, dose, técnica, punção e confirmação do efeito exigem avaliação e treinamento supervisionado.','comfort');
+const isolation=()=>tool('Prepare o campo','Entendi. Pode continuar.','isolamento','dente','O isolamento controla umidade e protege o campo. A instalação e a técnica foram condensadas neste exercício.','isolated');
+const finish=()=>choice('Acompanhamento','Quando eu devo voltar?','O procedimento foi concluído e não há sintomas novos. Qual proposta melhor conecta o atendimento ao controle da doença?',[
+ 'Programar retorno anual, repetir a radiografia e substituir restaurações com pigmentação.',
+ 'Agendar polimento mensal, manter a dieta e renovar o material de rotina.',
+ 'Reavaliar a adaptação em seis meses e concentrar orientações no material utilizado.',
+ 'Individualizar o retorno por risco, reforçar autocuidado e reavaliar sinais e sintomas.'
+ ],3,['Intervalo e exames precisam de indicação; pigmentação isolada não determina substituição.','Polimento frequente e troca de material não controlam os fatores que mantêm a doença.','Reavaliar a restauração é parte do cuidado, mas falta integrar risco e controle dos fatores causais.','O retorno deve considerar risco e resposta ao cuidado. Higiene, dieta e sinais de alerta são discutidos conforme o caso.']);
 const cases=[
- {id:'carie',name:'Cárie profunda',area:'Dentística',desc:'Investigue sensibilidade e preserve tecido em uma lesão cavitada.',time:'8–12 min',focus:'molar',complaint:'Sinto uma fisgada quando tomo algo gelado.',finding:'Dente 16: cavidade oclusal com dentina amolecida. Dor provocada breve, sem dor espontânea. Exame e imagem indicados sugerem lesão profunda; testes pulpares e periapicais precisam ser interpretados em conjunto.',start:'caries',steps:[intake(),
- choice('Investigue antes de diagnosticar','A dor passa logo que paro de beber. Isso quer dizer que preciso fazer canal?',[
- 'Indicar canal somente pela profundidade aparente.',
- 'Investigar duração da dor, examinar, testar sensibilidade e avaliar imagem quando indicada.',
- 'Prescrever antibiótico para qualquer sensibilidade.'
- ],1,'Sintomas, testes e exame orientam o diagnóstico pulpar. Profundidade da lesão, isoladamente, não indica tratamento endodôntico.'),
- tool('Examine o dente 16','Pode olhar. Eu aviso se incomodar.','espelho','dente','Observe a cavitação e integre os achados à anamnese. A imagem 3D é uma ilustração do caso, não um exame diagnóstico.','examined'),
- choice('Escolha a abordagem','Você vai precisar tirar muita parte do meu dente?',[
- 'Remover dentina até obter superfície dura em toda a região, mesmo junto à polpa.',
- 'Restaurar sem discutir controle da doença ou possibilidade de acompanhamento.',
- 'Planejar remoção seletiva de tecido cariado e restauração, preservando a polpa quando indicada.'
- ],2,'Para lesões profundas em dentes vitais selecionados, a remoção seletiva pode reduzir a exposição pulpar. As margens e o selamento devem permitir uma restauração adequada. O diagnóstico e a restaurabilidade determinam a conduta.'),anesthesia(),isolation(),
- tool('Faça a etapa de remoção seletiva','Obrigada por explicar. Pode continuar.','escavador','dente','Etapa conceitual concluída: preservar tecido próximo à polpa pode fazer parte do plano. Este gesto não ensina força, extensão ou técnica de escavação.','prepared'),
- tool('Restaure o selamento','Esse material vai fechar a cavidade?','resina','dente','A resina representa a etapa restauradora. Condicionamento, adesão, inserção, fotopolimerização, acabamento e checagem oclusal foram condensados para este exercício; devem ser estudados e executados conforme protocolo.','restored'),finish()],sources:[['ADA · manejo de lesões de cárie',ADA]]},
- {id:'restauracao',name:'Restauração fraturada',area:'Dentística',desc:'Decida entre acompanhamento, reparo e substituição.',time:'7–10 min',focus:'molar',complaint:'Quebrou uma pontinha da minha restauração.',finding:'Dente 16: pequeno defeito localizado em restauração de resina. Restante da restauração íntegro, sem evidência de cárie ativa no caso; sem sintomas pulpares. O exame permite um reparo localizado.',start:'fracture',steps:[intake(),
- tool('Observe a extensão do defeito','Percebi uma pontinha áspera quando passo a língua.','espelho','dente','Avalie margens, extensão do defeito, cárie, contato e oclusão. Nem todo defeito exige substituir toda a restauração.','examined'),
- choice('Quanto intervir?','Vai precisar trocar tudo?',[
- 'Considerar reparo localizado após avaliar a restauração e discutir as alternativas.',
- 'Remover toda a restauração automaticamente.',
- 'Ignorar a fratura sem examinar.'
- ],0,'Neste cenário, o defeito é localizado e o restante está adequado. O reparo preserva estrutura; substituição completa depende de outros achados.'),isolation(),
- tool('Selecione o material para reparo','Se der para preservar o restante, eu prefiro.','resina','dente','Representa um reparo após preparo e adesão apropriados. Compatibilidade de materiais, protocolo adesivo e fotopolimerização precisam ser conferidos na prática.','restored'),
- tool('Verifique o contato oclusal','Posso fechar a boca normalmente?','carbono','dente','A verificação oclusal faz parte da avaliação final. A marcação, sozinha, não define a quantidade de ajuste.','checked'),finish()],sources:[['ADA · reparo de restaurações','https://adanews.ada.org/ada-news/2021/april/ace-panel-report-finds-4-out-of-5-respondents-repair-defective-restorations'],['ADA · materiais restauradores','https://www.ada.org/resources/ada-library/oral-health-topics/materials-for-direct-restorations']]},
- {id:'aparelho',name:'Avaliação para aparelho',area:'Ortodontia',desc:'Conheça a queixa, avalie a saúde bucal e organize o planejamento.',time:'5–8 min',focus:'arcada',complaint:'Quero alinhar os dentes. Já posso colocar aparelho?',finding:'Lia relata dificuldade de higiene entre dentes apinhados. O exame fictício mostra biofilme e sangramento gengival. Ainda faltam registros e avaliação ortodôntica completa.',start:'plaque',steps:[intake(),
- tool('Examine antes de planejar','Queria entender como seria o tratamento.','espelho','dente','A avaliação envolve dentes, periodonto, oclusão, função, expectativas e registros indicados. O arco ilustrado não reproduz o apinhamento desse caso.','examined'),
- choice('Qual é a prioridade?','Dá para colocar o aparelho hoje?',[
- 'Colar bráquetes sem avaliar a gengiva ou obter registros.',
- 'Controlar a inflamação e completar o diagnóstico e planejamento antes da instalação.',
- 'Prometer um prazo exato só olhando o sorriso.'
- ],1,'A saúde bucal e periodontal deve ser avaliada e estabilizada. A escolha do aparelho, biomecânica e duração depende do diagnóstico e planejamento individualizados.'),
- tool('Oriente a higiene','Às vezes sangra e por isso eu evito escovar nessa parte.','escova','gengiva','O sangramento pede avaliação e controle de biofilme. Demonstre higiene suave e eficaz, adapte a limpeza interdental e combine reavaliação.','clean'),
- choice('Explique o aparelho','Depois de cuidar da gengiva, como vamos decidir o aparelho?',[
- 'Escolher apenas pela cor dos elásticos.',
- 'Escolher a maior força para terminar rapidamente.',
- 'Discutir opções a partir do diagnóstico, dos registros e dos objetivos, com consentimento.'
- ],2,'O tratamento movimenta dentes em um sistema biológico. A simulação permite conhecer componentes, mas não prescreve forças, extrações ou um plano ortodôntico.'),
- tool('Conheça o bráquete na bancada','Entendi. Quero conhecer as peças antes de decidir.','bracket','bancada','Bráquete selecionado para demonstração na bancada. Não foi instalado na paciente: o caso permanece na fase de avaliação e preparo.','planned'),finish()],sources:[['AAO · avaliação e preparo para aparelhos',AAO]]},
- {id:'periodonto',name:'Gengiva e periodonto',area:'Periodontia',desc:'Investigue sangramento, registre achados e planeje o controle.',time:'6–9 min',focus:'arcada',complaint:'Minha gengiva sangra quando escovo.',finding:'O periograma fictício registra sangramento à sondagem, perda de inserção e bolsas de 5–6 mm em alguns sítios. A avaliação radiográfica indicada mostra perda óssea correspondente. O conjunto sustenta periodontite; o modelo não reproduz essas medidas.',start:'plaque',steps:[intake(),
- tool('Registre o exame periodontal','Não dói, mas vejo sangue quase todos os dias.','sonda','gengiva','Sondagem, sangramento, recessão e inserção são registrados por sítio. Sangramento isolado não diferencia gengivite de periodontite. As medidas do caso são fornecidas, não obtidas do modelo.','charted'),
- choice('Integre os achados','Isso é só uma gengiva sensível?',[
- 'Diferenciar gengivite e periodontite pelos achados de inserção, sondagem e imagem, além do histórico.',
- 'Diagnosticar periodontite apenas pela cor da gengiva.',
- 'Considerar que ausência de dor significa ausência de doença.'
- ],0,'Perda de inserção e de osso, interpretadas no contexto clínico e excluindo outras causas, sustentam periodontite. Estadiamento e graduação exigem avaliação completa.'),
- tool('Comece pelo controle de biofilme','Quero aprender a limpar sem machucar.','escova','gengiva','Higiene individualizada, controle de fatores de risco e participação da paciente integram a primeira etapa do tratamento periodontal.','hygiene'),
- tool('Selecione a instrumentação indicada','E o que fica por baixo da gengiva?','cureta','gengiva','A instrumentação subgengival integra o tratamento da periodontite quando indicada. A seleção aqui é conceitual: adaptação, pressão, movimentos e analgesia requerem treinamento clínico.','clean'),
- choice('Planeje a reavaliação','Depois da limpeza está resolvido para sempre?',[
- 'Garantir cura permanente sem retorno.',
- 'Prescrever antibiótico sistêmico para todo caso.',
- 'Reavaliar a resposta, os sítios residuais e a higiene; organizar cuidado periodontal de suporte.'
- ],2,'O tratamento periodontal é sequencial e depende da resposta. Instrumentação, reavaliação e manutenção se conectam; antibióticos sistêmicos não são rotina para todos os casos.')],sources:[['EFP · diretrizes de tratamento periodontal',EFP]]},
- {id:'dor',name:'Dor de origem dental',area:'Endodontia',desc:'Escute a história e construa o diagnóstico antes de intervir.',time:'5–7 min',focus:'molar',complaint:'A dor aparece sozinha e me acordou esta noite.',finding:'Dente 16: dor espontânea e resposta persistente ao frio no caso fictício. Sem edema facial, febre ou dificuldade respiratória. Diagnóstico depende da integração de exame, testes, imagem e diagnóstico diferencial.',start:'caries',steps:[intake(),
- choice('Caracterize a dor','Às vezes nem sei dizer qual dente dói.',[
- 'Escolher o dente apenas pelo local apontado.',
- 'Investigar início, duração, fatores desencadeantes, dor referida e sinais de urgência.',
- 'Afirmar que todo dente dolorido precisa ser extraído.'
- ],1,'Dor referida pode dificultar a localização. Edema progressivo, febre e sinais sistêmicos mudam a avaliação; dificuldade para respirar ou engolir exige atendimento de urgência.'),
- tool('Examine com cuidado','O gelado fica doendo por bastante tempo.','espelho','dente','Inspeção não substitui testes de sensibilidade, percussão, palpação e imagem quando indicada. Compare achados e controle a dor conforme avaliação profissional.','examined'),
- choice('Formule uma hipótese, sem atalhos','Então o que pode estar acontecendo?',[
- 'Integrar os achados para avaliar inflamação pulpar e discutir tratamento endodôntico quando indicado.',
- 'Dar antibiótico como solução para toda dor pulpar sem sinais de disseminação.',
- 'Concluir necrose só porque a dor é forte.'
- ],0,'Dor espontânea e persistente provocada podem ser compatíveis com pulpite irreversível sintomática no contexto adequado. O diagnóstico não é feito por um sintoma isolado. Antibiótico não substitui tratamento local quando indicado.'),
- choice('Decida o próximo passo','Eu só quero resolver isso com segurança.',[
- 'Abrir o dente sem diagnóstico, consentimento ou isolamento.',
- 'Confirmar diagnóstico, restaurabilidade e plano; discutir alternativas e realizar ou encaminhar o tratamento.',
- 'Adiar indefinidamente sem orientar sobre piora.'
- ],1,'O exercício termina no planejamento. O procedimento endodôntico depende de diagnóstico completo, consentimento e treinamento supervisionado.')],sources:[['AAE · recursos clínicos de diagnóstico',AAE],['ADA · antibióticos em dor e edema','https://www.ada.org/resources/research/science/evidence-based-dental-research/antibiotics-for-dental-pain-and-swelling']]},
- {id:'prevencao',name:'Lesão inicial e prevenção',area:'Cariologia',desc:'Reconheça quando controlar a doença sem restaurar.',time:'5–7 min',focus:'incisivo',complaint:'Vi uma manchinha branca. Vai precisar de broca?',finding:'Dente 11: mancha branca opaca, superfície contínua sem cavitação, em área de retenção de biofilme. Diagnóstico diferencial e atividade são avaliados clinicamente. No caso, o conjunto é compatível com lesão de cárie inicial ativa.',start:'white',steps:[intake(),
- tool('Observe a superfície','Não dói, só fiquei preocupada com a cor.','espelho','dente','O exame de superfície limpa e seca ajuda a avaliar características da lesão. Cor isolada não estabelece atividade; outras alterações de esmalte entram no diagnóstico diferencial.','examined'),
- choice('A lesão precisa ser restaurada?', 'Dá para cuidar sem furar o dente?',[
- 'Restaurar toda mancha branca, mesmo sem cavitação.',
- 'Ignorar a lesão porque não há dor.',
- 'Priorizar controle do biofilme, orientação alimentar e fluoretos conforme risco e indicação.'
- ],2,'Lesões não cavitadas podem receber manejo não restaurador. A decisão depende da atividade, localização, risco e possibilidade de controle e acompanhamento.'),
- tool('Construa uma rotina de higiene','O que eu posso mudar em casa?','escova','dente','Combine uma rotina viável com dentifrício fluoretado e higiene eficaz. Frequência de açúcares e fatores de risco também precisam ser discutidos.','hygiene'),
- tool('Reconheça uma opção de manejo','E essa mancha vai sumir na hora?','fluor','dente','O verniz fluoretado é uma das opções profissionais em situações indicadas. A imagem não apaga a lesão: controle e remineralização exigem tempo e reavaliação, e a aparência pode persistir.','protected'),finish()],sources:[['ADA · manejo não restaurador de cárie',ADA]]}
+{id:'carie',name:'Cárie profunda',area:'Dentística',desc:'Interprete os achados e decida a extensão da intervenção.',time:'8–12 min',focus:'molar',complaint:'O gelado provoca uma fisgada que passa rápido.',finding:'Dente 16: lesão cavitada profunda. Resposta ao frio breve e semelhante ao controle; percussão e palpação negativas. Sem dor espontânea. Imagem indicada sem alteração periapical. Há estrutura suficiente para restauração e possibilidade de selamento.',start:'caries',steps:[intake('carie'),
+choice('Interprete os testes','A dor passa logo que paro de beber. Isso indica canal?','Com os achados fornecidos, qual interpretação pulpar é mais sustentada?',[
+ 'Necrose pulpar provável, porque a profundidade indica perda de vitalidade.',
+ 'Polpa responsiva, com resposta breve e sem sinais suficientes de irreversibilidade.',
+ 'Pulpite irreversível provável, pela lesão profunda e relato de sensibilidade térmica.',
+ 'Periodontite apical sintomática, porque a cavitação explica os sinais periapicais.'
+],1,['Profundidade não estabelece necrose, e há resposta ao frio. Testes de sensibilidade não medem diretamente a circulação pulpar.','A resposta breve, ausência de dor espontânea e exames periapicais negativos não sustentam pulpite irreversível no cenário descrito; a interpretação integra história, testes e exame.','Uma resposta ao frio não implica dano irreversível. Duração e comparação com controles são essenciais.','O caso informa percussão negativa e ausência de alteração periapical; não fornece os sinais que sustentariam essa hipótese.']),
+tool('Inspecione a superfície','Pode olhar. Eu aviso se incomodar.','espelho','dente','O espelho permite explorar uma vista indireta. Relacione a superfície ao prontuário; a malha e a lesão são referências visuais, não exames da paciente.','examined'),
+choice('Defina a conduta','É preciso remover toda a dentina alterada?','Lesão profunda, dente vital, restaurável e com selamento viável. Qual estratégia é mais conservadora e coerente com o caso?',[
+ 'Remoção não seletiva até dentina dura, incluindo a parede pulpar.',
+ 'Abertura coronária e tratamento endodôntico antes da execução da restauração.',
+ 'Remoção seletiva próxima à polpa, com periferia apta ao selamento.',
+ 'Aplicação de fluoreto na cavidade, adiando a restauração por rotina.'
+],2,['A busca de dentina dura junto à polpa em uma lesão profunda pode aumentar o risco de exposição pulpar.','Os achados não estabelecem indicação endodôntica. A profundidade isolada não justifica remover uma polpa responsiva.','Em casos selecionados como este, a remoção seletiva preserva tecido próximo à polpa e pode reduzir exposições; a periferia precisa permitir selamento adequado.','A cavitação e a necessidade de selamento diferenciam este caso de uma lesão inicial manejável apenas por medidas não restauradoras.']),anesthesia(),isolation(),
+tool('Trabalhe na região da lesão','Vou levantar a mão se sentir desconforto.','escavador','dente','A etapa representa remoção seletiva. A geometria não ensina força, extensão ou consistência tátil da escavação; a decisão de quanto remover depende de avaliação clínica.','prepared'),
+tool('Complete a etapa restauradora','Esse material fecha a cavidade?','resina','dente','Adesão, inserção, fotopolimerização, acabamento e avaliação oclusal foram condensados. Siga o protocolo do material e o treinamento da instituição.','restored'),finish()],sources:[['ADA · manejo de cárie',ADA]]},
+{id:'restauracao',name:'Restauração fraturada',area:'Dentística',desc:'Compare reparo, substituição e acompanhamento.',time:'7–10 min',focus:'molar',complaint:'Uma pequena borda da restauração quebrou.',finding:'Dente 16: defeito marginal localizado em resina, acessível e retentivo para biofilme. Restante íntegro, sem cárie ativa identificada, sem sintomas pulpares. A avaliação não encontrou trinca dental ou comprometimento generalizado.',start:'fracture',steps:[intake('restauracao'),
+tool('Observe o defeito','Percebo uma ponta áspera com a língua.','espelho','dente','Examine margens e extensão. A presença de um defeito não define automaticamente substituição completa.','examined'),
+choice('Escolha a intervenção','Será preciso trocar a restauração inteira?','O defeito é localizado, retentivo e acessível; o restante da restauração está adequado. Qual conduta melhor preserva estrutura?',[
+ 'Reparar o defeito local e preservar a porção clinicamente adequada.',
+ 'Substituir toda a restauração para obter uniformidade entre os materiais.',
+ 'Acompanhar sem intervenção local, já que não há sintomas pulpares.',
+ 'Planejar cobertura total, para reduzir a chance de novas fraturas.'
+],0,['Um reparo indicado após avaliação preserva estrutura e a porção adequada da restauração. Técnica e compatibilidade dos materiais devem ser verificadas.','A uniformidade do material, sozinha, não justifica remover uma restauração majoritariamente adequada.','Ausência de dor não resolve um defeito retentivo. O cenário fornece indicação para correção local.','Não há informação de perda estrutural extensa que justifique cobertura total como primeira opção.']),isolation(),
+tool('Repare a região indicada','Prefiro preservar o que estiver bom.','resina','dente','O reparo pressupõe preparo de superfície e protocolo adesivo compatíveis; a ação condensa essas etapas.','restored'),
+tool('Confira o contato oclusal','Posso fechar a boca?','carbono','dente','A marca é um registro ilustrativo de contato. Sua intensidade isolada não define carga ou quantidade de desgaste.','checked'),finish()],sources:[['FDI · reparo de restaurações','https://www.fdiworlddental.org/repair-restorations'],['ADA · materiais restauradores','https://www.ada.org/resources/ada-library/oral-health-topics/materials-for-direct-restorations']]},
+{id:'aparelho',name:'Avaliação para aparelho',area:'Ortodontia',desc:'Relacione saúde periodontal e planejamento ortodôntico.',time:'6–9 min',focus:'arcada',complaint:'Quero alinhar meus dentes. Posso colocar aparelho hoje?',finding:'Apinhamento relatado, biofilme visível e sangramento gengival. Faltam periograma completo, registros e diagnóstico ortodôntico. A arcada exibida é uma referência anatômica e não reproduz o apinhamento fictício.',start:'plaque',steps:[intake('aparelho'),
+tool('Examine o arco','Quero entender o que precisa avaliar.','espelho','dente','Avalie dentes, periodonto, oclusão e função e obtenha os registros indicados. O espelho complementa, não substitui, essa avaliação.','examined'),
+choice('Estabeleça a sequência','O aparelho pode ajudar a limpar os dentes?','Com inflamação gengival e avaliação periodontal incompleta, qual sequência é mais adequada?',[
+ 'Instalar bráquetes e corrigir o apinhamento antes de controlar a inflamação.',
+ 'Avaliar o periodonto, controlar a inflamação e completar o planejamento ortodôntico.',
+ 'Escolher alinhadores removíveis e iniciar forças leves durante a investigação periodontal.',
+ 'Solicitar apenas modelos de estudo e instalar contenção até obter alinhamento.'
+],1,['A movimentação não substitui controle do biofilme e avaliação periodontal; iniciar sem esses dados antecipa uma etapa.','Saúde periodontal, diagnóstico e planejamento devem orientar o início da movimentação; o caso ainda não preenche essas condições.','Ser removível pode favorecer higiene em algumas situações, mas não elimina a necessidade de avaliação e controle da inflamação.','Modelos não fornecem todos os dados necessários; contenção tem função diferente de um plano de movimentação ativa.']),
+tool('Demonstre a higiene','Evito a região que sangra porque fico com medo.','escova','gengiva','Oriente limpeza eficaz e suave, adaptada ao caso, com avaliação do sangramento e reavaliação.','clean'),
+choice('Discuta as opções','Alinhador é sempre melhor para mim?','Depois do controle da inflamação, qual informação orienta melhor a escolha do aparelho?',[
+ 'Preferência estética da paciente e disponibilidade de acessórios da clínica.',
+ 'Idade cronológica da paciente e intervalo desejado entre as consultas.',
+ 'Diagnóstico, movimentos necessários e capacidade da paciente de seguir o plano.',
+ 'Quantidade de dentes apinhados e tipo de contenção escolhido previamente.'
+],2,['Preferências importam, mas devem ser combinadas com diagnóstico, necessidades biomecânicas e viabilidade.','Idade e logística não substituem os dados que determinam os movimentos necessários.','A seleção deve integrar necessidades do caso, limites do sistema, colaboração e consentimento; não decorre de uma promessa universal de superioridade.','A contagem isolada de dentes e uma contenção escolhida antes do plano não resolvem o diagnóstico.']),
+tool('Explore o componente','Quero conhecer a peça antes de decidir.','bracket','bancada','Bráquete demonstrado na bancada; nenhuma instalação foi realizada. O caso permanece em avaliação e preparo.','planned'),finish()],sources:[['AAO · aparelhos e preparo',AAO]]},
+{id:'periodonto',name:'Gengiva e periodonto',area:'Periodontia',desc:'Diferencie os achados e organize uma sequência de cuidado.',time:'7–10 min',focus:'arcada',complaint:'Minha gengiva sangra quando escovo.',finding:'Sangramento à sondagem, perda de inserção interdental em dentes não adjacentes, bolsas de 5–6 mm em alguns sítios e perda óssea correspondente. Outras causas locais de perda de inserção foram investigadas. Medidas são fornecidas no caso; não são obtidas da malha.',start:'plaque',steps:[intake('periodonto'),
+tool('Explore o exame periodontal','Não sinto muita dor. Isso pode acontecer mesmo assim?','sonda','gengiva','O exercício apresenta sítios de sondagem e registros fictícios. Não mede resistência, pressão ou profundidade real em tecido.','charted'),
+choice('Integre os achados','É só uma gengivite?','Qual achado fornecido distingue este quadro de gengivite em periodonto íntegro?',[
+ 'Perda de inserção interdental compatível, junto a perda óssea na região.',
+ 'Sangramento à sondagem em vários sítios, acompanhado de acúmulo de biofilme.',
+ 'Aumento do volume gengival localizado, associado à dificuldade de higiene interdental.',
+ 'Ausência de dor durante mastigação, associada à presença de halitose persistente.'
+],0,['Perda de inserção e óssea compatíveis, excluindo outras causas, sustentam periodontite. Estágio e grau exigem o conjunto completo de dados.','Sangramento e biofilme também podem ocorrer na gengivite, sem perda de inserção.','Aumento de volume pode ocorrer em inflamação gengival e não estabelece perda de suporte.','Dor e halitose não são os critérios que distinguem perda de suporte periodontal.']),
+tool('Trabalhe o controle de biofilme','Quero aprender a limpar essa área.','escova','gengiva','O controle de biofilme e fatores de risco integra a primeira etapa do cuidado periodontal.','hygiene'),
+tool('Selecione a instrumentação','O que será feito nos locais mais profundos?','cureta','gengiva','A instrumentação subgengival é parte do tratamento quando indicada. Adaptação, pressão e movimentos precisam de treinamento supervisionado.','clean'),
+choice('Reavalie a resposta','Ainda pode sangrar depois do tratamento?','Na reavaliação, persistem bolsas profundas com sangramento, apesar da melhora de higiene. Qual é o próximo raciocínio?',[
+ 'Manter o mesmo intervalo de suporte sem investigar os sítios residuais.',
+ 'Prescrever antibiótico sistêmico e adiar intervenção local até a próxima manutenção.',
+ 'Avaliar os sítios residuais e os fatores associados antes da terapia adicional.',
+ 'Repetir somente orientação de higiene e considerar a perda de inserção estável.'
+],2,['O suporte é necessário, mas sítios residuais ativos exigem reavaliação específica.','Antibiótico não substitui a avaliação e o tratamento local, nem é rotina indiscriminada na periodontite.','A resposta é avaliada por sítio; achados residuais, anatomia e fatores de risco orientam as etapas adicionais e o suporte.','Reforço de higiene é útil, porém não permite presumir estabilidade diante dos achados apresentados.'])],sources:[['EFP · diretrizes periodontais',EFP]]},
+{id:'dor',name:'Dor de origem dental',area:'Endodontia',desc:'Compare hipóteses sem se apoiar em um sintoma isolado.',time:'6–9 min',focus:'molar',complaint:'A dor aparece sozinha e me acordou durante a noite.',finding:'Dente 16: dor espontânea, resposta ao frio que persiste por cerca de 40 segundos, controle com resposta breve, percussão negativa. Sem febre, edema ou sinais de disseminação. Diagnóstico depende da integração da história, exames e imagens indicadas.',start:'caries',steps:[intake('dor'),
+choice('Localize a origem','Às vezes parece que a dor é no ouvido.','A localização referida é imprecisa. Qual estratégia acrescenta mais segurança à identificação do dente envolvido?',[
+ 'Integrar história e testes comparativos dos dentes suspeitos, adjacentes e controles.',
+ 'Priorizar a intensidade relatada e escolher o dente com maior restauração.',
+ 'Basear a seleção na área apontada e na profundidade radiográfica aparente.',
+ 'Usar a resposta ao analgésico para identificar o dente responsável pela dor.'
+],0,['Comparações e integração dos achados ajudam a evitar tratar o dente errado em casos de dor referida.','Intensidade e tamanho de restauração não localizam a origem com segurança.','Localização apontada e profundidade radiográfica, isoladamente, podem induzir erro de identificação.','Alívio com analgésico não funciona como teste localizador do dente causal.']),
+tool('Complete a inspeção','O gelado continua doendo depois que eu paro de beber.','espelho','dente','A inspeção complementa testes e imagem; não substitui avaliação pulpar e periapical.','examined'),
+choice('Formule a hipótese','Qual é a interpretação desses testes?','Dor espontânea e resposta térmica prolongada, com percussão negativa e sem edema: qual hipótese é mais compatível?',[
+ 'Necrose pulpar com abscesso apical agudo e comprometimento dos tecidos adjacentes.',
+ 'Polpa normal com periodontite apical sintomática associada a trauma oclusal.',
+ 'Pulpite reversível com tecidos apicais normais e sensibilidade dentinária transitória.',
+ 'Pulpite irreversível sintomática, sem sinais clínicos de comprometimento apical neste caso.'
+],3,['Resposta térmica prolongada e ausência de edema não sustentam a combinação proposta; o diagnóstico não se baseia apenas na intensidade da dor.','Dor espontânea e resposta térmica prolongada não correspondem a polpa normal; a percussão negativa também contraria o quadro apical proposto.','A persistência após o estímulo e a dor espontânea tornam essa hipótese menos compatível com o cenário fornecido.','É a hipótese mais compatível com a combinação descrita. Deve ser confirmada com avaliação completa e diagnóstico diferencial; testes de sensibilidade não são histologia.']),
+choice('Planeje o cuidado','O que fazemos a partir daqui?','A hipótese foi confirmada e não há sinais sistêmicos. Qual proposta atende melhor ao quadro?',[
+ 'Iniciar antibiótico e adiar a intervenção local até cessarem os sintomas.',
+ 'Avaliar restaurabilidade e discutir tratamento local, analgesia e encaminhamento quando necessário.',
+ 'Acompanhar apenas a resposta térmica, mantendo o retorno anual de rotina.',
+ 'Indicar exodontia inicial, considerando a dor espontânea como sinal de irrestaurabilidade.'
+],1,['Em dor pulpar sem disseminação, antibiótico não substitui o tratamento odontológico indicado.','O plano integra diagnóstico, restaurabilidade, alternativas de tratamento local, alívio da dor e competência/encaminhamento. Modalidades terapêuticas dependem da avaliação individual.','A intensidade e persistência do quadro exigem plano oportuno; não cabe retorno anual como única conduta.','Dor espontânea não determina irrestaurabilidade nem indica exodontia por si só.'])],sources:[['AAE · recursos clínicos',AAE],['ADA · dor e antibióticos','https://www.ada.org/resources/research/science/evidence-based-dental-research/antibiotics-for-dental-pain-and-swelling']]},
+{id:'prevencao',name:'Lesão inicial e prevenção',area:'Cariologia',desc:'Avalie atividade e a indicação de manejo não restaurador.',time:'6–9 min',focus:'incisivo',complaint:'Essa mancha branca precisa de restauração?',finding:'Dente 11: lesão opaca em área de estagnação de biofilme, superfície sem cavitação, aspecto e contexto compatíveis com atividade após limpeza e secagem. Diagnósticos diferenciais de alterações de esmalte foram considerados.',start:'white',steps:[intake('prevencao'),
+tool('Observe a superfície','Não dói. Só percebi a cor diferente.','espelho','dente','Explore a superfície; o diagnóstico de atividade exige exame clínico limpo e seco, textura, localização e contexto.','examined'),
+choice('Escolha o manejo','Dá para tratar sem restaurar?','A superfície é contínua e a área permite controle de biofilme. Qual conduta inicial é mais coerente?',[
+ 'Preparar a superfície e restaurar a área para reduzir a opacidade.',
+ 'Observar a aparência sem mudar fatores locais, já que não há cavidade.',
+ 'Controlar biofilme e risco, usar fluoretos indicados e acompanhar a atividade.',
+ 'Clarear o esmalte e reavaliar a necessidade de preparo após uniformizar a cor.'
+],2,['A ausência de cavitação e a possibilidade de controle favorecem manejo não restaurador; opacidade não é indicação automática de preparo.','Uma lesão ativa pede controle de fatores causais e acompanhamento, mesmo sem cavidade.','O manejo não restaurador pode controlar lesões iniciais. A escolha de medidas depende do risco, atividade e localização.','Uniformizar a cor não aborda o processo de cárie ativo descrito.']),
+tool('Pratique a higiene da região','O que eu posso mudar em casa?','escova','dente','Construa uma rotina com higiene eficaz e dentifrício fluoretado, além de discutir frequência de açúcares e fatores de risco.','hygiene'),
+tool('Aplique o manejo indicado','A mancha vai sumir imediatamente?','fluor','dente','O verniz representa uma opção profissional quando indicada. A lesão não desaparece em um gesto: atividade e aparência precisam ser acompanhadas ao longo do tempo.','protected'),finish()],sources:[['ADA · manejo não restaurador',ADA]]}
 ];
 window.CLINICAL_CASES=cases;
 })();
