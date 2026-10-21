@@ -10,3 +10,30 @@
 @media(prefers-reduced-motion:reduce){.sim-instruments{scroll-behavior:auto}}
 
 .sim-contact{position:absolute;width:17px;height:17px;border:2px solid #173e34;border-radius:50%;box-shadow:0 0 0 2px #fffef0;transform:translate(-50%,-50%);pointer-events:none}.sim-contact:after{content:"";position:absolute;left:5px;top:5px;width:3px;height:3px;border-radius:50%;background:#173e34}.sim-contact[hidden]{display:none}
+/* Direct clinical actions: one button, one result, beside the current task. */
+.sim-decision .sim-tray{border:0;padding:0;margin:18px 0;background:transparent}
+.sim-tray h3{font-size:16px;margin:0 0 6px}
+.sim-decision .sim-instruments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;overflow:visible;padding:0}
+.sim-decision .sim-instrument{width:auto;min-width:0;min-height:85px;padding:10px 5px;border:1px solid var(--line);background:var(--paper);border-radius:8px}
+.sim-decision .sim-instrument:hover:not(:disabled){background:var(--sage);border-color:var(--green)}
+.sim-decision .sim-instrument:disabled{opacity:.58;cursor:default}
+.sim-decision .sim-instrument span{font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.sim-decision .sim-instrument svg{width:29px;height:29px;margin-bottom:5px}
+.sim-feedback{scroll-margin:24px}
+.sim-result-finding{font-size:15px;line-height:1.65}
+.sim-patient-reply{font-style:italic}
+.sim-periogram{width:100%;border-collapse:collapse;margin:16px 0;font-size:12px;font-variant-numeric:tabular-nums;text-align:left}
+.sim-periogram caption{text-align:left;font-weight:600;padding-bottom:8px}
+.sim-periogram th,.sim-periogram td{border-bottom:1px solid var(--line);padding:8px 5px;vertical-align:top}
+.sim-records{padding-left:20px;font-size:13px;line-height:1.65}
+.sim-records li{padding:8px 0}
+.sim-records p{margin:4px 0 0}
+.sim-field-status{margin:0 18px 18px;padding:12px;background:var(--paper);border-radius:8px;font-size:13px;line-height:1.6}
+.sim-jaw-control{display:flex;gap:12px;align-items:center;padding:8px 18px;font-size:13px}
+.sim-jaw-control input{flex:1;min-width:60px;accent-color:var(--green)}
+.sim-jaw-control span{min-width:28px;font-variant-numeric:tabular-nums}
+.sim-model-note{padding:0 18px;margin:10px 0}
+.sim-canvas-wrap{background:var(--viewer)}
+.sim-mouth #sim-canvas{height:370px}
+@media(max-width:850px){.sim-mouth #sim-canvas{height:330px}.sim-decision .sim-instruments{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.sim-mouth #sim-canvas{height:290px}.sim-decision .sim-instruments{grid-template-columns:repeat(3,minmax(0,1fr))}.sim-jaw-control{gap:8px;font-size:12px}.sim-periogram{font-size:11px}}

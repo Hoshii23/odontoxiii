@@ -22,6 +22,22 @@ function anatomicalArch(){
  const result=(window.DENTAL_ARCH||[]).map((data,i)=>{window.DENTAL_MESHES['arch-'+i]={[data.layer]:data};const m=anatomicalTooth('arch-'+i)[0];return {...m,fdi:data.fdi};});
  REAL_CACHE.set('arch',result);return result;
 }
+function completeMouth(opening=24,arch='both'){
+ if(!REAL_CACHE.has('mouth')){
+  const result=(window.DENTAL_MOUTH||[]).map((data,i)=>{window.DENTAL_MESHES['mouth-'+i]={[data.layer]:data};return {...anatomicalTooth('mouth-'+i)[0],arch:data.arch,fdi:data.fdi,anatomical:false};});
+  REAL_CACHE.set('mouth',result);
+ }
+ const angle=opening*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),hinge=[0,0,-1.65];
+ return REAL_CACHE.get('mouth').filter(m=>arch==='both'||m.arch===arch).map(m=>m.arch==='upper'?m:{...m,vertices:m.vertices.map(([x,y,z])=>[x,hinge[1]+c*(y-hinge[1])-s*(z-hinge[2]),hinge[2]+s*(y-hinge[1])+c*(z-hinge[2])]),normals:m.normals.map(([x,y,z])=>[x,c*y-s*z,s*y+c*z])});
+}
+function isolatedField(fdi=16){
+ const source=completeMouth(0,'upper').find(m=>m.fdi===fdi);if(!source)return[];
+ const bounds=[0,1,2].map(i=>[Math.min(...source.vertices.map(p=>p[i])),Math.max(...source.vertices.map(p=>p[i]))]);
+ const center=bounds.map(b=>(b[0]+b[1])/2),vertices=source.vertices.map(([x,y,z])=>[(x-center[0])*1.45,-(y-center[1])*1.45,-(z-center[2])*1.45]),normals=source.normals.map(([x,y,z])=>[x,-y,-z]);
+ const tooth={...source,vertices,normals};const base=-(bounds[1][1]-center[1])*1.45+.025;
+ const dam=surface((u,v)=>{const t=u*TAU,c=Math.cos(t),s=Math.sin(t),outer=Math.min(1.9/Math.max(Math.abs(c),.001),1.65/Math.max(Math.abs(s),.001)),r=mix(.57,outer,v);return[r*c,base-.12*v+.025*Math.sin(t*4)*v,r*s];},96,10);
+ return [tooth,{...dam,layer:'gengiva',color:hex('#367f76'),fdi:0}];
+}
 function anatomicalTooth(type){
  if(REAL_CACHE.has(type))return REAL_CACHE.get(type);
  const source=window.DENTAL_MESHES?.[type];if(!source)return null;
@@ -309,7 +325,7 @@ const multiply=(a,b)=>{const c=new Float32Array(16);for(let j=0;j<4;j++)for(let 
 class DentalAtlas{
  constructor(canvas,onError){
   Object.assign(this,{canvas,onError,yaw:-.90,pitch:.28,zoom:5.4,model:'molar',cut:false,stage:0,exploded:false,anatomical:true,ctx:null,gl:null,buffers:[],pointers:new Map(),frame:null,disposed:false});
-  this.visible={esmalte:true,dentina:true,polpa:true,cemento:true,gengiva:true,instrumento:true};this.clinical=0;this.instrument=null;this.mode='orbit';this.toolPosition=[.65,.2];this.mirrorTilt=0;this.mirrorPitch=0;this.hit=null;this.gestureCancelled=false;
+  this.mouthOpening=24;this.mouthArch='both';this.visible={esmalte:true,dentina:true,polpa:true,cemento:true,gengiva:true,instrumento:true};this.clinical=0;this.instrument=null;this.mode='orbit';this.toolPosition=[.65,.2];this.mirrorTilt=0;this.mirrorPitch=0;this.hit=null;this.gestureCancelled=false;
   try{
    this.gl=canvas.getContext('webgl',{antialias:true,alpha:false});
    if(this.gl)this.init();else{this.ctx=canvas.getContext('2d',{alpha:false});if(!this.ctx)throw Error('Visualização indisponível');}
@@ -339,9 +355,10 @@ class DentalAtlas{
   if(!this.gl&&!this.ctx)return;
   for(const b of this.buffers)if(this.gl)this.gl.deleteBuffer(b.buffer);
   this.buffers=[];const detail=this.model==='arcada'?.63:1;let meshes=[];
-  this.usingAnatomy=this.anatomical&&!this.stage&&!(this.cut&&this.model!=='arcada')&&!this.exploded&&!!window.DENTAL_MESHES;
+  this.usingAnatomy=this.model!=='boca'&&this.anatomical&&!this.stage&&!(this.cut&&this.model!=='arcada')&&!this.exploded&&!!window.DENTAL_MESHES;
   const getTooth=type=>this.usingAnatomy?anatomicalTooth(type)||tooth(type,detail):tooth(type,detail);
-  if(this.model==='arcada'&&this.usingAnatomy&&window.DENTAL_ARCH){meshes=anatomicalArch();}
+  if(this.model==='boca'){meshes=this.isolated?isolatedField(this.isolationFDI):completeMouth(this.mouthOpening,this.mouthArch);}
+  else if(this.model==='arcada'&&this.usingAnatomy&&window.DENTAL_ARCH){meshes=anatomicalArch();}
   else if(this.model==='arcada'){
    for(let i=0;i<14;i++){
     const theta=-1.36+i*2.72/13,d=Math.abs(i-6.5),type=d<2?'incisivo':d<3?'canino':d<5?'premolar':'molar',scale=d<1?.48:d<2?.40:d<3?.47:d<5?.50:.47;
@@ -361,7 +378,9 @@ class DentalAtlas{
   }
   this.onRebuild?.();this.request();
  }
- setModel(model){if(!['molar','incisivo','arcada'].includes(model))return;const changed=this.model!==model;this.model=model;if(changed){this.exploded=false;this.reset();this.rebuild();}else this.request();}
+ setModel(model){if(!['molar','incisivo','arcada','boca'].includes(model))return;const changed=this.model!==model;this.model=model;if(changed){this.exploded=false;this.reset();this.rebuild();}else this.request();}
+ setIsolation(value,fdi=16){if(this.isolated===!!value)return;this.isolated=!!value;this.isolationFDI=fdi;if(this.model==='boca'){if(value){this.yaw=-.18;this.pitch=1.15;this.zoom=6.4;}else this.reset();this.rebuild();}}
+ setMouth(opening=24,arch='both'){this.mouthOpening=clamp(Number(opening)||0,0,34);this.mouthArch=['upper','lower'].includes(arch)?arch:'both';this.rebuild();}
  setCut(cut){cut=!!cut;if(this.cut===cut)return;this.cut=cut;if(cut&&this.model!=='arcada'){this.yaw=-1.12;this.pitch=.10;}this.rebuild();}
  setStage(stage){const next=clamp(Number(stage)||0,0,3);if(this.stage===next)return;this.stage=next;this.rebuild();}
  setAnatomical(value){if(this.anatomical===!!value)return;this.anatomical=!!value;this.rebuild();}
@@ -416,7 +435,7 @@ class DentalAtlas{
  setVisible(layer,value){if(layer in this.visible){this.visible[layer]=!!value;this.request();}}
  setExploded(value){this.exploded=!!value&&this.model!=='arcada';this.zoom=this.model==='arcada'?7.8:this.exploded?8.4:5.4;this.yaw=this.exploded?-.28:this.cut?-1.12:-.90;this.pitch=.14;this.rebuild();}
  setView(view){const preset={perspectiva:[this.exploded?-.28:this.cut?-1.12:-.90,.28],frontal:[0,0],oclusal:[0,1.48],lateral:[-Math.PI/2,.02]};if(preset[view]){[this.yaw,this.pitch]=preset[view];this.request();}}
- reset(){this.yaw=this.model==='arcada'?0:this.exploded?-.28:this.cut?-1.12:-.90;this.pitch=this.model==='arcada'?.92:.28;this.zoom=this.model==='arcada'?7.8:this.exploded?8.4:5.4;this.request();}
+ reset(){if(this.model==='boca'){this.yaw=this.isolated?-.18:-.32;this.pitch=this.isolated?1.15:.08;this.zoom=this.isolated?6.4:9.7;this.request();return;}this.yaw=this.model==='arcada'?0:this.exploded?-.28:this.cut?-1.12:-.90;this.pitch=this.model==='arcada'?.92:.28;this.zoom=this.model==='arcada'?7.8:this.exploded?8.4:5.4;this.request();}
  changeZoom(delta){this.zoom=clamp(this.zoom+delta,this.model==='arcada'?6:this.exploded?6.2:3.8,16);this.request();}
  occluded(layer){if(this.usingAnatomy)return (layer==='polpa'||layer==='esmalte')&&this.visible.dentina;if(this.cut&&this.model!=='arcada'||this.exploded)return false;return layer==='polpa'&&this.visible.dentina||layer==='dentina'&&this.visible.esmalte&&this.visible.cemento;}
  offset(layer){return this.exploded?({esmalte:-1.65,cemento:-1.65,dentina:0,polpa:1.65}[layer]||0):0;}

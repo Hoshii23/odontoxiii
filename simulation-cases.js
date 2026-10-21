@@ -47,7 +47,7 @@ const intake=(caseId)=>{
  ],0,['Frequência de açúcares e exposição a fluoretos ajudam a compor o risco, junto de história de doença, saliva e exame.','Temperatura dos alimentos pode provocar sintomas, mas não é o dado mais relevante ao risco de cárie.','Clareamento entra no histórico e no diagnóstico diferencial; não é o principal dado de risco solicitado.','O equipamento e a marca não dizem, sozinhos, se há remoção eficaz de biofilme ou exposição adequada a fluoretos.'])
  };return bank[caseId];
 };
-const anesthesia=()=>tool('Planeje o conforto','Podemos combinar que eu levanto a mão se incomodar?','anestesia','campo','História, consentimento e plano conferidos. A ação representa planejamento; fármaco, dose, técnica, punção e confirmação do efeito exigem avaliação e treinamento supervisionado.','comfort');
+const anesthesia=()=>tool('Garanta o conforto antes de intervir','Podemos combinar que eu levanto a mão se incomodar?','anestesia','campo','A ação condensa planejamento, administração e verificação do conforto no caso fictício. Escolha do fármaco, dose, técnica e confirmação clínica do efeito exigem avaliação individual e treinamento supervisionado.','comfort');
 const isolation=()=>tool('Prepare o campo','Entendi. Pode continuar.','isolamento','dente','O isolamento controla umidade e protege o campo. A instalação e a técnica foram condensadas neste exercício.','isolated');
 const finish=()=>choice('Acompanhamento','Quando eu devo voltar?','O procedimento foi concluído e não há sintomas novos. Qual proposta melhor conecta o atendimento ao controle da doença?',[
  'Programar retorno anual, repetir a radiografia e substituir restaurações com pigmentação.',
@@ -145,5 +145,55 @@ choice('Escolha o manejo','Dá para tratar sem restaurar?','A superfície é con
 tool('Pratique a higiene da região','O que eu posso mudar em casa?','escova','dente','Construa uma rotina com higiene eficaz e dentifrício fluoretado, além de discutir frequência de açúcares e fatores de risco.','hygiene'),
 tool('Aplique o manejo indicado','A mancha vai sumir imediatamente?','fluor','dente','O verniz representa uma opção profissional quando indicada. A lesão não desaparece em um gesto: atividade e aparência precisam ser acompanhadas ao longo do tempo.','protected'),finish()],sources:[['ADA · manejo não restaurador',ADA]]}
 ];
+// Findings below belong to the fictional case, never to the reference mesh.
+const outcomes={
+ carie:{
+  espelho:{finding:'Pela visão indireta, foi identificada uma área escurecida e cavitada na face oclusal do 16, junto ao sulco distal, antes encoberta na vista direta. A cor sozinha não determina atividade ou profundidade da lesão.',response:'Agora entendi qual parte você estava olhando.'},
+  escavador:{finding:'Remoção seletiva simulada: periferia preparada para selamento e tecido próximo à polpa preservado. Nenhuma exposição pulpar ocorreu neste cenário.',response:'Não senti dor durante essa etapa.'},
+  resina:{finding:'Cavidade do 16 selada com restauração em resina. Protocolo adesivo, inserção, cura e acabamento foram concluídos na simulação. A verificação oclusal será realizada após a remoção do isolamento.',response:'A região ficou lisa. Vou seguir as orientações.'}
+ },
+ restauracao:{
+  espelho:{finding:'A vista indireta revelou um defeito localizado na margem distopalatina da restauração do 16, com retenção de biofilme. O restante está íntegro. A avaliação complementar não identificou cárie ativa ou trinca dental.',response:'É essa a pontinha áspera que eu sentia.'},
+  resina:{finding:'Defeito marginal do 16 reparado. A porção adequada da restauração foi preservada e o contorno local foi refeito após o preparo de superfície e a adesão simulados.',response:'A ponta áspera desapareceu.'},
+  carbono:{finding:'Isolamento removido e contatos oclusais registrados no 16. Neste cenário, os contatos estão compatíveis com os dentes vizinhos e não há interferência detectada na avaliação; a intensidade da marca, isoladamente, não mede carga.',response:'Não sinto esse dente tocar antes dos outros.',effect:'checked'}
+ },
+ aparelho:{
+  espelho:{finding:'A inspeção indireta evidenciou biofilme nas faces linguais dos incisivos inferiores e na margem gengival posterior. O sangramento relatado pede avaliação periodontal antes de planejar movimentação.',response:'Eu realmente tenho dificuldade para limpar atrás dos dentes.'},
+  escova:{finding:'Higiene demonstrada nas margens gengivais e regiões de difícil acesso. Lia repetiu a orientação com o modelo. A inflamação não desaparece na mesma consulta; foi programada reavaliação.',response:'Vou limpar também a região que sangra, com cuidado.'},
+  bracket:{finding:'Bráquete apresentado e sua função no aparelho fixo explicada. Nenhum componente foi instalado: o caso ainda exige avaliação completa e controle periodontal.',response:'Entendi por que precisamos avaliar antes de colocar.',effect:'planned'}
+ },
+ periodonto:{
+  sonda:{finding:'A sondagem registrou bolsas de 5–6 mm e sangramento em sítios selecionados. Há perda de inserção interdental em dentes não adjacentes, compatível com a perda óssea fornecida no caso. O recorte abaixo não é um periograma completo.',response:'Eu não tinha percebido que poderia haver perda de suporte sem dor.',effect:'charted',rows:[['16 · mesiovestibular','6 mm','Sim'],['26 · distovestibular','5 mm','Sim'],['31 · vestibular','3 mm','Não']]},
+  escova:{finding:'Biofilme e áreas de difícil higiene discutidos com Lia; escovação e limpeza interdental demonstradas conforme as necessidades do caso. O plano de autocuidado ficou registrado.',response:'Agora sei quais regiões preciso cuidar melhor.'},
+  cureta:{finding:'Instrumentação subgengival simulada nos sítios indicados após o exame e o planejamento. Depósitos foram removidos. Cicatrização, bolsas residuais e sangramento serão avaliados no retorno, sem presumir cura imediata.',response:'Vou continuar os cuidados e voltar para reavaliar.'}
+ },
+ dor:{
+  espelho:{finding:'A inspeção indireta do 16 mostrou cavitação oclusal. O espelho não determina o estado da polpa: neste caso, a dor espontânea e a resposta ao frio por cerca de 40 segundos precisam ser integradas aos testes comparativos e aos exames indicados.',response:'A dor continua por um tempo depois do gelado.'}
+ },
+ prevencao:{
+  espelho:{finding:'Após limpeza e secagem simuladas, a vista indireta mostrou área branca opaca na região cervical vestibular do 11, com superfície contínua e sem cavitação. Localização e contexto são compatíveis com atividade; cor isolada não fecha o diagnóstico.',response:'Então a mancha não significa que já existe um buraco?'},
+  escova:{finding:'Higiene da margem gengival do 11 demonstrada e rotina com dentifrício fluoretado discutida, junto à frequência de açúcares. Lia identificou a região onde acumulava biofilme.',response:'Vou incluir essa região na minha rotina.'},
+  fluor:{finding:'Verniz fluoretado aplicado na lesão inicial do 11 conforme a indicação do caso. A mancha permanece visível; controle da atividade e mudanças de aspecto serão acompanhados nos retornos.',response:'Entendi que a resposta será acompanhada ao longo do tempo.',effect:'protected'}
+ }
+};
+const shared={
+ anestesia:{finding:'História médica, consentimento e plano anestésico conferidos. A anestesia local foi realizada na simulação e o conforto foi verificado antes de iniciar o procedimento. Não houve intercorrência no cenário.',response:'A região está anestesiada e estou confortável.',effect:'comfort'},
+ isolamento:{finding:'Isolamento absoluto instalado no campo do dente 16. Umidade controlada, tecidos protegidos e acesso ao dente mantido; a integridade do isolamento foi conferida.',response:'Estou confortável. Pode continuar.',effect:'isolated'}
+};
+const cariesCase=cases.find(c=>c.id==='carie');
+cariesCase.steps.splice(cariesCase.steps.length-1,0,tool('Confira os contatos oclusais','Posso fechar a boca agora?','carbono','dente','Após remover o isolamento, os contatos são avaliados com registros e exame clínico. Tamanho ou intensidade da marca não medem a força isoladamente.','checked'));
+outcomes.carie.carbono=outcomes.restauracao.carbono;
+const initial={
+ carie:'Dente 16: sensibilidade breve ao frio, semelhante ao controle, sem dor espontânea. Percussão e palpação negativas. Imagem indicada sugere lesão profunda, sem alteração periapical. Restaurabilidade e possibilidade de selamento foram confirmadas.',
+ restauracao:'Dente 16: relato de pequena fratura na restauração, sem sintomas pulpares. O exame de margens será registrado na inspeção.',
+ periodonto:'Sangramento gengival relatado e biofilme visível. Os dados de sondagem serão registrados com o instrumento adequado. O exame complementar informa perda óssea e exclui outras causas locais de perda de inserção.'
+};
+for(const c of cases){
+ c.initialFinding=initial[c.id]||c.finding;
+ for(const s of c.steps)if(s.kind==='tool'){
+  s.outcome={...((outcomes[c.id]||{})[s.instrument]||shared[s.instrument]),effect:s.visual,...((outcomes[c.id]||{})[s.instrument]||shared[s.instrument])};
+  if(!s.outcome.finding||!s.outcome.response)throw Error('Resultado ausente: '+c.id+'/'+s.instrument);
+ }
+}
 window.CLINICAL_CASES=cases;
 })();

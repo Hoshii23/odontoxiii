@@ -1,0 +1,239 @@
+{
+  "source": "NateSaindon/3Dentes",
+  "license": "CC BY-NC 4.0",
+  "origin": [
+    3.531928062438965,
+    -23.799007415771484,
+    -13.175768852233887
+  ],
+  "axes": [
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "scale": 0.08820395171642303,
+  "meshes": [
+    {
+      "file": "FMA55697.stl",
+      "sha256": "a3010ec8405b2638da7f4557a24c0de3a1f16bd2fb1461cc1252b7106737245c",
+      "triangles": 3640,
+      "fdi": 17,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55698.stl",
+      "sha256": "1b67d06bd2fd75798bb867483ceffd0c268c273ebcd62ce8b5b2f1fe503e904e",
+      "triangles": 3508,
+      "fdi": 16,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55688.stl",
+      "sha256": "b1198b04e3223ec1381a752350e1ae68ed404c07840b9739a0e6f3df296ed3d6",
+      "triangles": 4485,
+      "fdi": 15,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55689.stl",
+      "sha256": "ca4f2a4fdb14e2d31785488964bd81bfb002ceae4484c99b62193ca638b00224",
+      "triangles": 4628,
+      "fdi": 14,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55798.stl",
+      "sha256": "61825023e12c50542528ffc0da4196e0c9acc9ca9a7a4a57335ad303c86e0929",
+      "triangles": 4267,
+      "fdi": 13,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55680.stl",
+      "sha256": "ff2037eccca0f5e5163f52852cbd063b666839070ac4579ecfc83c7ae127efb5",
+      "triangles": 4427,
+      "fdi": 12,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55681.stl",
+      "sha256": "8ec076ea338b23e306c33ea2b7c8fe006932d2cbb33ad4b24eadca7489076811",
+      "triangles": 4621,
+      "fdi": 11,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55682.stl",
+      "sha256": "41bddf6c8607830d33c0e518b374f303fbef1d268a1102020fa0385119437285",
+      "triangles": 4675,
+      "fdi": 21,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55683.stl",
+      "sha256": "014ea3ace03f1cef610ef728dc5e51d6b5d8dcaf20ff23cd228280f497b2bef4",
+      "triangles": 4823,
+      "fdi": 22,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55799.stl",
+      "sha256": "58b23f69da54693ffcd74435bc476a1d109ddf7f9a7af28f5bcdfe101e69d1a7",
+      "triangles": 4839,
+      "fdi": 23,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55690.stl",
+      "sha256": "64434366d59cdf10c9c196421555659bb3f6813e62d93ba170d19e7070f25106",
+      "triangles": 4759,
+      "fdi": 24,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55691.stl",
+      "sha256": "96904f5a873d27eb6d4f2e5aee3fa447192036564c498ddb128756a2a3032d45",
+      "triangles": 4849,
+      "fdi": 25,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55699.stl",
+      "sha256": "513a2ea115f0edf594e751379acd327226f484e5654ec2078176075103a25454",
+      "triangles": 3704,
+      "fdi": 26,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55700.stl",
+      "sha256": "4ecd0476351a18d633fd47890815a0d8f5b1d019ebe185dc89f3063faf3e6c9b",
+      "triangles": 3760,
+      "fdi": 27,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA55703.stl",
+      "sha256": "1cafab59f72773c7669ec3538365c71edc2559a2f15423518377314c43e5d197",
+      "triangles": 4349,
+      "fdi": 37,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55704.stl",
+      "sha256": "d970098b8fc1e6996bfdda00d21c918c4e7d689256fcd6b2f838b4f964f1518f",
+      "triangles": 3291,
+      "fdi": 36,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55692.stl",
+      "sha256": "1436e9dc0d3203d27b2bbad683c197403b0c868c975dffa7668ad4e6b3b839bb",
+      "triangles": 5447,
+      "fdi": 35,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55693.stl",
+      "sha256": "d5a504ddf226064f2b8ad025380c05c90de712740b11c9c95275dcab3d2a1af2",
+      "triangles": 5398,
+      "fdi": 34,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55687.stl",
+      "sha256": "febcd759d2b5b36f9c84608678ddee07259ff65f1cae20c7ea84474453302fa3",
+      "triangles": 3700,
+      "fdi": 33,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA57141.stl",
+      "sha256": "b644082b8b47ba786386dada1459ea9d315b911365ebd2d75442cd5f160d5573",
+      "triangles": 4487,
+      "fdi": 32,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA57143.stl",
+      "sha256": "0b5b427b129ba7d3b901f8711175051069d2d9b2c0f65c3a85932d036ebc9f4c",
+      "triangles": 5053,
+      "fdi": 31,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA57142.stl",
+      "sha256": "4dc4bace846da4d85e758678f58dbdbd8713b3c25e894bbd377500d80d63d40d",
+      "triangles": 4915,
+      "fdi": 41,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA57140.stl",
+      "sha256": "e35527c57f8a8820730955dd8d071fca304bd95597218a4bd812290f90264121",
+      "triangles": 4172,
+      "fdi": 42,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55686.stl",
+      "sha256": "441e11e02d26e449991ba43fe96faeae82eb97bdaeca074951c25541253403ee",
+      "triangles": 4277,
+      "fdi": 43,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55694.stl",
+      "sha256": "4bdf8610ef0c568f5f55146311b0468864e777f4cfe71b12b880524e6656bb28",
+      "triangles": 5134,
+      "fdi": 44,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55695.stl",
+      "sha256": "6efd127ff27537cbacc703760afd1b7355b88b720ac18915cb4495925894a1e1",
+      "triangles": 4878,
+      "fdi": 45,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55705.stl",
+      "sha256": "bd7734c866f07f56ee74f651e768d2e1933c461dc31d7d75c51c8138a0511cac",
+      "triangles": 3303,
+      "fdi": 46,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA55706.stl",
+      "sha256": "70ad0d4a0cc076e46363378818663c7b046bd9b5479ff5710586bff5f9ebe262",
+      "triangles": 4680,
+      "fdi": 47,
+      "arch": "lower"
+    },
+    {
+      "file": "FMA59763.stl",
+      "sha256": "28afceb3dd53d0ee740982f859372699f88ff8d26cdf7a9519c71568e4469bc9",
+      "triangles": 12000,
+      "fdi": 0,
+      "arch": "upper"
+    },
+    {
+      "file": "FMA59764.stl",
+      "sha256": "bd597da3b2ad798bac7b6ce4d7631a283912cce409314bb216f260b4d17a1dcc",
+      "triangles": 12000,
+      "fdi": 0,
+      "arch": "lower"
+    }
+  ]
+}
