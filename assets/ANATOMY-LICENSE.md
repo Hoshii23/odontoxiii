@@ -36,3 +36,26 @@
 
 No endorsement by the creator is implied. Dundee models and clinical photographs
 are separate external references: see `REFERENCE-SOURCES.md`.
+
+## v8 native tooth-interior study
+
+The primary Atlas study retains the same source outer tooth and segmented pulp
+in whole, cut and separated views. Outer surface triangles are partitioned at a
+cervical plane inferred from the source enamel envelope. The dentin core is an
+closed teaching volume generated from the source interior on a 0.045 display-unit
+grid. Ray-parity voxelization, a smoothed inward-distance field and marching
+tetrahedra and eight local smoothing passes produce conservative internal surfaces.
+Preparation checks that smoothed vertices remain inside the source volume and
+that each core edge belongs to exactly two faces. The distance threshold varies
+between roots and crown; no offset source triangles are used. `tools/pack-study-core.py`
+records the preparation method. The resulting enamel,
+dentin and cementum boundaries are **illustrative**, not measured histology or
+clinically validated segmentation. Source pulp is preserved. Clipping adds
+triangulated section faces; display colors identify tissues. Lesion mode remains
+a separate schematic geometry and is labeled accordingly.
+
+The MSD/BioDigital tooth model is an external reference linked on its original
+page. Its meshes, images, customer widget and licensing are not copied into this
+application. BioDigital publishing conditions were checked against
+https://support.biodigital.com/hc/en-us/articles/225773768-Publish-a-3D-model
+and https://support.biodigital.com/hc/en-us/articles/360000055447-What-subscriptions-do-you-offer.
