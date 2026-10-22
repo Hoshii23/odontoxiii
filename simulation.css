@@ -1,39 +1,157 @@
-.sim-lobby{max-width:1100px;margin:auto}.sim-intro{display:grid;grid-template-columns:1fr 260px;background:var(--sage);border-radius:16px;overflow:hidden;min-height:300px}.sim-intro>div{padding:38px}.sim-intro h1,.sim-heading h1,.sim-summary h1{font-size:38px;font-weight:550;line-height:1.2;letter-spacing:-.035em;margin:0 0 14px;text-wrap:balance}.sim-intro p{max-width:55ch;font-size:16px}.sim-intro-photo{width:100%;height:100%;max-height:340px;object-fit:cover;object-position:center 32%}.sim-small{font-size:13px;color:var(--muted);line-height:1.65}.sim-intro .sim-small{margin-top:20px;font-size:13px}.sim-case-list{border-top:1px solid var(--line)}.sim-case-row{display:grid;grid-template-columns:44px 1fr 125px 20px;align-items:center;gap:20px;padding:23px 8px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}.sim-case-row:hover{background:var(--sage)}.sim-case-icon{width:42px;height:42px;display:grid;place-items:center;background:var(--sage);border-radius:10px}.sim-case-icon .icon{width:23px;height:23px}.sim-case-row strong{font-size:18px;font-weight:550;display:block}.sim-case-row span>span{display:block;font-size:14px;color:var(--muted);margin-top:3px}.sim-case-meta{font-size:13px}.sim-case-meta small{display:block;color:var(--muted);margin-top:3px}.sim-lobby>.sim-small{margin-top:25px;max-width:90ch}.sim-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}.sim-heading h1{font-size:31px;margin-bottom:7px}.sim-heading p{color:var(--muted);margin:0}.sim-step-count{white-space:nowrap;font-size:14px;font-variant-numeric:tabular-nums}.sim-progress{display:block;appearance:none;width:100%;height:5px;border:0;background:var(--line);margin:20px 0 27px;border-radius:4px}.sim-progress::-webkit-progress-bar{background:var(--line);border-radius:4px}.sim-progress::-webkit-progress-value{background:var(--green);border-radius:4px}.sim-progress::-moz-progress-bar{background:var(--green);border-radius:4px}.sim-room{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,1fr);gap:28px;align-items:start}.sim-clinical-area{min-width:0}.sim-patient{display:grid;grid-template-columns:92px 1fr;gap:20px;align-items:start;margin-bottom:24px}.sim-patient>img{width:92px;height:128px;object-fit:cover;border-radius:12px;object-position:center 24%}.sim-patient-name{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;font-size:14px}.sim-patient-name span{color:var(--muted);font-size:12px}.sim-speech{position:relative;margin:9px 0 4px;padding:13px 17px;background:white;border-radius:0 14px 14px 14px;font-size:16px;line-height:1.55;color:var(--ink)}.sim-voice{font-size:12px;min-height:36px}.sim-voice-status{font-size:12px;display:block;color:var(--muted)}.sim-mouth{background:#edf1e3;border-radius:16px;overflow:hidden;position:relative}.sim-mouth-top{display:flex;justify-content:space-between;gap:12px;padding:15px 19px;font-size:13px}.sim-mouth-top span{font-size:12px;color:#52675b;text-align:right}#sim-canvas{display:block;width:100%;height:355px;touch-action:none;cursor:grab}#sim-canvas.dragging{cursor:grabbing}.sim-view-controls{padding:7px 15px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}.sim-view-controls button{font-size:12px;min-height:44px}.sim-targets{padding:15px 19px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#e0e8d7;font-size:13px;min-height:78px}.sim-targets>span{max-width:28ch}.sim-targets .btn{white-space:normal;text-align:left;flex-shrink:0}.sim-tray .section-heading{margin:24px 0 12px}.sim-tray h2{font-size:18px}.sim-instruments{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.sim-instrument{background:white;border:1px solid var(--line);border-radius:10px;min-height:94px;padding:10px 6px;display:flex;align-items:center;flex-direction:column;justify-content:center;gap:8px;color:var(--ink);cursor:pointer;font:inherit;font-size:12px;line-height:1.35;text-align:center}.sim-instrument svg{height:31px;width:31px}.sim-instrument:hover:not(:disabled){background:var(--sage)}.sim-instrument.selected{background:var(--deep);border-color:var(--deep);color:white}.sim-instrument:disabled{cursor:default;opacity:.48}.sim-tool-description{min-height:40px;font-size:12px;color:var(--muted);margin:10px 0}.sim-decision{padding:24px;background:white;border-radius:16px}.sim-decision h2{font-size:23px;line-height:1.3;margin:0 0 13px;font-weight:550;letter-spacing:-.02em}.sim-instruction{font-size:14px;color:var(--muted);margin:0 0 17px}.sim-answers{display:grid;gap:10px}.sim-answers .answer-option{margin:0;padding:15px;font-size:14px;min-height:60px;line-height:1.55}.sim-feedback{padding:17px;border-radius:12px;margin-top:20px;font-size:14px}.sim-feedback p{margin:7px 0 0;line-height:1.7}.sim-feedback.is-correct{background:#e7f0de;color:#203e34}.sim-feedback.needs-review{background:#f7e8e1;color:#7d352b}.sim-next{margin-top:18px;width:100%;justify-content:space-between}.sim-chart,.sim-guide{margin-top:24px;padding-top:19px;border-top:1px solid var(--line);font-size:13px;line-height:1.75}.sim-chart summary,.sim-guide summary{cursor:pointer;min-height:36px;font-weight:550;color:var(--ink)}.sim-chart dt{font-weight:550;margin-top:12px}.sim-chart dd{margin:4px 0 0;color:var(--muted)}.sim-guide p{color:var(--muted)}.sim-restart{margin-top:20px;font-size:12px;min-height:44px}#sim-restart-confirm{font-size:13px}.sim-attribution{margin-top:22px;font-size:12px}.sim-summary{max-width:860px;margin:auto;padding:36px;background:white;border-radius:16px}.sim-summary h2{font-size:23px;margin:34px 0 15px}.sim-summary-response{padding:20px 24px;background:var(--sage);font-size:18px;border-radius:0 14px 14px 14px}.sim-debrief{padding-left:25px}.sim-debrief li{padding:15px 0;border-bottom:1px solid var(--line)}.sim-debrief li::marker{color:var(--muted)}.sim-debrief strong{font-size:16px;display:block}.sim-debrief span{display:block;font-size:12px;color:var(--muted);margin-top:5px}.sim-debrief p{font-size:14px;color:var(--muted);margin-bottom:0}.sim-render-error{padding:32px;line-height:1.7}.simulation-invite{display:grid;grid-template-columns:1fr 150px;overflow:hidden;border-radius:16px;background:var(--sage);margin-bottom:25px}.simulation-invite>div{padding:27px}.simulation-invite h2{font-size:26px;margin:0 0 8px;font-weight:550;letter-spacing:-.025em}.simulation-invite p{max-width:65ch;margin:0 0 18px;color:var(--muted)}.simulation-invite img{width:150px;height:100%;object-fit:cover;object-position:center 25%}.anatomy-credit{padding:12px 18px;margin:0;font-size:12px;color:var(--muted);line-height:1.65;background:#f0f4e8}.anatomy-mode{font-weight:550;color:var(--deep)}
-@media(max-width:1100px){.sim-room{gap:20px;grid-template-columns:minmax(0,1.2fr) minmax(285px,1fr)}.sim-decision{padding:20px}.sim-instruments{grid-template-columns:repeat(3,minmax(0,1fr))}.sim-targets{align-items:flex-start;flex-direction:column}.sim-intro>div{padding:30px}}
-@media(max-width:850px){.sim-room{display:flex;flex-direction:column}.sim-clinical-area{display:contents}.sim-room .sim-patient{order:0;width:100%}.sim-decision{order:1;width:100%}.sim-mouth{order:2;width:100%}.sim-tray{order:3;width:100%}.sim-decision .sim-chart,.sim-decision .sim-guide{margin-top:16px}.sim-instruments{grid-template-columns:repeat(4,minmax(0,1fr))}.sim-intro{grid-template-columns:1fr 210px}.sim-targets{flex-direction:row;align-items:center}#sim-canvas{height:390px}.sim-patient{grid-template-columns:100px 1fr}.sim-patient>img{width:100px;height:135px}.sim-intro h1{font-size:33px}.sim-heading h1{font-size:28px}.sim-case-row{grid-template-columns:42px 1fr 105px 18px;gap:14px}}
-@media(max-width:600px){.sim-intro{grid-template-columns:1fr 110px;min-height:0}.sim-intro>div{padding:23px 18px}.sim-intro h1{font-size:28px}.sim-intro p{font-size:14px}.sim-intro .button-row{align-items:stretch;flex-direction:column}.sim-intro-photo{max-height:100%;object-position:48% center}.sim-case-row{grid-template-columns:36px 1fr 18px;gap:12px;padding:19px 0}.sim-case-icon{width:34px;height:36px}.sim-case-meta{display:none}.sim-case-row strong{font-size:16px}.sim-case-row span>span{font-size:13px}.sim-heading{align-items:flex-start}.sim-heading h1{font-size:26px}.sim-step-count{font-size:12px}.sim-heading p{font-size:13px}.sim-patient{gap:13px;grid-template-columns:74px 1fr}.sim-patient>img{width:74px;height:110px}.sim-speech{font-size:14px;padding:12px}.sim-patient-name span{display:none}.sim-instruments{grid-template-columns:repeat(3,minmax(0,1fr))}#sim-canvas{height:310px}.sim-mouth-top{padding:14px;font-size:12px}.sim-targets{flex-direction:column;align-items:stretch}.sim-targets>span{max-width:none}.sim-summary{padding:23px}.sim-summary h1{font-size:30px}.simulation-invite{grid-template-columns:1fr 85px}.simulation-invite>div{padding:22px}.simulation-invite img{width:85px}.simulation-invite h2{font-size:23px}.sim-decision{padding:20px}.sim-decision h2{font-size:21px}}
-/* Instrument workspace: objective, mode, model and tray stay together. */
-.sim-clinical-area{position:sticky;top:18px}.sim-canvas-wrap{position:relative}.sim-objective{display:flex;gap:10px;align-items:baseline;margin:0;padding:9px 18px;background:#dfe8d5;font-size:13px}.sim-objective span{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#52675b}.sim-objective strong{font-weight:550}.sim-mode{display:flex;gap:3px;padding:3px;background:#dbe4d1;border-radius:9px}.sim-mode button{border:0;border-radius:6px;background:transparent;color:var(--deep);padding:8px 12px;cursor:pointer;font:inherit;font-size:12px;min-height:44px}.sim-mode button[aria-pressed=true]{background:var(--deep);color:white}.sim-mode button:disabled{opacity:.45;cursor:default}#sim-canvas.tool-mode{cursor:crosshair}#sim-canvas.tool-mode.dragging{cursor:crosshair}.sim-hit{position:absolute;bottom:12px;left:16px;background:#fffef0e8;color:var(--deep);padding:6px 10px;border:1px solid #c8d3bc;border-radius:6px;font-size:12px;pointer-events:none}.sim-held{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 18px 0;border-top:1px solid #d1dcc5;font-size:13px}.sim-held button{font-size:12px;min-height:44px}.sim-held button:disabled{opacity:.45;cursor:default}.sim-interaction{margin:0;padding:0 18px 12px;font-size:12px;line-height:1.6;color:#435a4d;min-height:36px}.sim-mouth .sim-tray{padding:0 14px 14px;background:#e3eada}.sim-mouth .sim-tray .section-heading{margin:0;padding:14px 3px 10px}.sim-mouth .sim-tray h2{font-size:15px}.sim-mouth .sim-tray .date-label{font-size:11px}.sim-instruments{display:flex;overflow-x:auto;gap:7px;scrollbar-width:thin;padding:2px 2px 8px;scroll-snap-type:x proximity}.sim-instrument{flex:0 0 88px;min-height:82px;font-size:11px;scroll-snap-align:start}.sim-instrument svg{width:27px;height:27px}.sim-mirror-controls{padding:5px 18px 12px;display:grid;grid-template-columns:110px 1fr 38px;gap:10px;align-items:center;font-size:12px}.sim-mirror-controls[hidden]{display:none}.sim-mirror-controls input{min-width:0;min-height:44px;width:100%;accent-color:var(--green)}.sim-mirror-controls p{grid-column:1/-1;margin:0;color:#435a4d}.sim-accessible{padding:12px 18px;font-size:12px;background:#f2f5e9}.sim-accessible summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.sim-accessible>div{display:grid;grid-template-columns:1fr auto;gap:10px;padding-bottom:6px}.sim-accessible label{grid-column:1/-1}.sim-accessible select{min-width:0;max-width:100%;padding:10px;border:1px solid #a7b99c;border-radius:6px;background:white;color:var(--ink);font:inherit;font-size:14px;min-height:44px}.sim-accessible .btn{font-size:12px}.sim-decision .sim-instruction{color:#43564d}.sim-patient{grid-template-columns:68px 1fr;gap:14px;margin-bottom:15px}.sim-patient>img{width:68px;height:100px}.sim-speech{font-size:14px}.sim-room{grid-template-columns:minmax(0,1.25fr) minmax(300px,1fr);gap:24px}#sim-canvas{height:330px}.sim-view-controls{padding:7px 12px;gap:6px}.sim-view-controls .text-link{font-size:11px}
-@media(max-width:1100px){.sim-clinical-area{position:static}.sim-room{grid-template-columns:minmax(0,1.1fr) minmax(280px,1fr);gap:18px}.sim-mode button{padding:8px}.sim-view-controls{gap:4px}.sim-view-controls .text-link{padding:4px 7px}}
-@media(max-width:850px){.sim-room{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}.sim-clinical-area{display:block;order:0}.sim-decision{order:1}.sim-mouth{width:100%}.sim-room .sim-patient{width:auto}.sim-patient{grid-template-columns:64px 1fr}.sim-patient>img{width:64px;height:85px}#sim-canvas{height:320px}.sim-instruments{display:flex}.sim-objective{flex-wrap:wrap;gap:3px 10px}.sim-instrument{flex-basis:94px}.sim-tray{width:auto}.sim-decision .sim-chart{margin-top:18px}}
-@media(max-width:600px){.sim-room{gap:16px}.sim-heading h1{font-size:25px}.sim-progress{margin:16px 0 20px}.sim-mouth-top{font-size:11px;gap:8px}.sim-mouth-top span{font-size:10px}#sim-canvas{height:290px}.sim-mode button{font-size:11px}.sim-view-controls .text-link{font-size:11px}.sim-interaction{font-size:12px}.sim-held{padding-left:14px;padding-right:14px}.sim-held strong{font-size:12px}.sim-accessible>div{grid-template-columns:1fr}.sim-accessible label{grid-column:auto}.sim-patient-name{font-size:13px}.sim-patient-name span{display:none}.sim-speech{font-size:13px}.sim-mirror-controls{grid-template-columns:95px 1fr 34px}.sim-instrument{flex-basis:86px}}
-@media(prefers-reduced-motion:reduce){.sim-instruments{scroll-behavior:auto}}
-
-.sim-contact{position:absolute;width:17px;height:17px;border:2px solid #173e34;border-radius:50%;box-shadow:0 0 0 2px #fffef0;transform:translate(-50%,-50%);pointer-events:none}.sim-contact:after{content:"";position:absolute;left:5px;top:5px;width:3px;height:3px;border-radius:50%;background:#173e34}.sim-contact[hidden]{display:none}
-/* Direct clinical actions: one button, one result, beside the current task. */
-.sim-decision .sim-tray{border:0;padding:0;margin:18px 0;background:transparent}
+.sim-lobby{max-width:1100px;margin:auto}
+.sim-intro{display:grid;grid-template-columns:1fr 260px;background:var(--sage);border-radius:16px;overflow:hidden;min-height:300px}
+.sim-intro>div{padding:38px}
+.sim-intro h1,.sim-heading h1,.sim-summary h1{font-size:38px;font-weight:550;line-height:1.2;letter-spacing:-.035em;margin:0 0 14px;text-wrap:balance}
+.sim-intro p{max-width:55ch;font-size:16px}
+.sim-intro-photo{width:100%;height:100%;max-height:340px;object-fit:cover;object-position:center 32%}
+.sim-small{font-size:13px;color:var(--muted);line-height:1.65}
+.sim-intro .sim-small{margin-top:20px;font-size:13px}
+.sim-case-list{border-top:1px solid var(--line)}
+.sim-case-row{display:grid;grid-template-columns:44px 1fr 125px 20px;align-items:center;gap:20px;padding:23px 8px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.sim-case-row:hover{background:var(--sage)}
+.sim-case-icon{width:42px;height:42px;display:grid;place-items:center;background:var(--sage);border-radius:10px}
+.sim-case-icon .icon{width:23px;height:23px}
+.sim-case-row strong{font-size:18px;font-weight:550;display:block}
+.sim-case-row span>span{display:block;font-size:14px;color:var(--muted);margin-top:3px}
+.sim-case-meta{font-size:13px}
+.sim-case-meta small{display:block;color:var(--muted);margin-top:3px}
+.sim-lobby>.sim-small{margin-top:25px;max-width:90ch}
+.sim-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.sim-heading h1{font-size:31px;margin-bottom:7px}
+.sim-heading p{color:var(--muted);margin:0}
+.sim-step-count{white-space:nowrap;font-size:14px;font-variant-numeric:tabular-nums}
+.sim-progress{display:block;appearance:none;width:100%;height:5px;border:0;background:var(--line);margin:20px 0 27px;border-radius:4px}
+.sim-progress::-webkit-progress-bar{background:var(--line);border-radius:4px}
+.sim-progress::-webkit-progress-value{background:var(--green);border-radius:4px}
+.sim-progress::-moz-progress-bar{background:var(--green);border-radius:4px}
+.sim-room{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,1fr);gap:24px;align-items:start}
+.sim-clinical-area{min-width:0;position:sticky;top:18px}
+.sim-patient{display:grid;grid-template-columns:68px 1fr;gap:14px;align-items:start;margin-bottom:15px}
+.sim-patient>img{width:68px;height:100px;object-fit:cover;border-radius:12px;object-position:center 24%}
+.sim-patient-name{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;font-size:14px}
+.sim-patient-name span{color:var(--muted);font-size:12px}
+.sim-speech{margin:9px 0 4px;padding:13px 17px;background:var(--paper);border-radius:0 14px 14px 14px;font-size:14px;line-height:1.55;color:var(--ink)}
+.sim-voice{font-size:12px;min-height:44px}
+.sim-voice-status{font-size:12px;display:block;color:var(--muted)}
+.sim-mouth{background:var(--viewer,#eaf0df);border-radius:16px;overflow:hidden}
+.sim-mouth-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 18px 5px;font-size:15px}
+.sim-mouth-top span{font-size:12px;color:#435a4d;text-align:right}
+.sim-mouth-views{display:flex;gap:8px;flex-wrap:wrap;padding:4px 12px 10px}
+.sim-mouth-views button{min-height:44px;padding:9px 12px;font-size:13px;border:1px solid transparent;border-radius:7px}
+.sim-mouth-views button[aria-pressed=true]{background:var(--paper);border-color:#c8d6bd;text-decoration:none;color:var(--deep)}
+.sim-mouth-views button:disabled{opacity:.5;cursor:default}
+.sim-mouth-figure{margin:0}
+.sim-mouth-diagram{display:block;width:100%;height:auto;fill:none;stroke:none;stroke-width:0;font-family:var(--font-body, 'DM Sans', system-ui, sans-serif)}
+.sim-mouth-figure figcaption{font-size:14px;line-height:1.65;color:var(--ink);padding:16px 18px 0;max-width:72ch}
+.sim-mouth-legend{display:flex;gap:9px 17px;flex-wrap:wrap;padding:12px 18px;font-size:12px;color:#435a4d}
+.sim-mouth-legend>span{display:flex;align-items:center;gap:7px}
+.sim-mouth-legend i{display:block;width:12px;height:12px;border:1px solid #8b8170;border-radius:2px;flex-shrink:0}
+.sim-field-status{margin:0 18px 13px;padding:12px;background:var(--paper);border-radius:8px;font-size:13px;line-height:1.6;color:var(--deep)}
+.sim-mouth-note{font-size:12px;line-height:1.6;color:#435a4d;padding:0 18px 16px;margin:0}
+.sim-component-demo{display:flex;gap:14px;align-items:center;margin:0 18px 16px;padding-top:4px;font-size:13px;line-height:1.6;color:var(--deep)}
+.sim-component-demo svg{width:46px;height:46px;flex-shrink:0}
+.sim-component-demo p{margin:0}
+.sim-decision{min-width:0;padding:24px;background:var(--paper);border-radius:16px}
+.sim-decision h2{font-size:23px;line-height:1.3;margin:0 0 13px;font-weight:550;letter-spacing:-.02em}
+.sim-instruction{font-size:14px;color:#43564d;margin:0 0 17px;line-height:1.65}
+.sim-answers{display:grid;gap:10px}
+.sim-answers .answer-option{margin:0;padding:15px;font-size:14px;min-height:60px;line-height:1.55}
+.sim-decision .sim-tray{padding:0;margin:18px 0}
 .sim-tray h3{font-size:16px;margin:0 0 6px}
-.sim-decision .sim-instruments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;overflow:visible;padding:0}
-.sim-decision .sim-instrument{width:auto;min-width:0;min-height:85px;padding:10px 5px;border:1px solid var(--line);background:var(--paper);border-radius:8px}
-.sim-decision .sim-instrument:hover:not(:disabled){background:var(--sage);border-color:var(--green)}
-.sim-decision .sim-instrument:disabled{opacity:.58;cursor:default}
-.sim-decision .sim-instrument span{font-size:12px;line-height:1.35;overflow-wrap:anywhere}
-.sim-decision .sim-instrument svg{width:29px;height:29px;margin-bottom:5px}
-.sim-feedback{scroll-margin:24px}
+.sim-instruments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sim-instrument{min-width:0;min-height:85px;padding:10px 5px;display:flex;align-items:center;flex-direction:column;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--paper);border-radius:8px;color:var(--ink);cursor:pointer;font:inherit;text-align:center}
+.sim-instrument:hover:not(:disabled){background:var(--sage);border-color:var(--green)}
+.sim-instrument:disabled{opacity:.58;cursor:default}
+.sim-instrument span{font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.sim-instrument svg{width:29px;height:29px}
+.sim-feedback{padding:17px;border-radius:12px;margin-top:20px;font-size:14px;scroll-margin:24px}
+.sim-feedback p{margin:7px 0 0;line-height:1.7}
+.sim-feedback.is-correct{background:#e7f0de;color:#203e34}
+.sim-feedback.needs-review{background:#f7e8e1;color:#7d352b}
 .sim-result-finding{font-size:15px;line-height:1.65}
 .sim-patient-reply{font-style:italic}
-.sim-periogram{width:100%;border-collapse:collapse;margin:16px 0;font-size:12px;font-variant-numeric:tabular-nums;text-align:left}
-.sim-periogram caption{text-align:left;font-weight:600;padding-bottom:8px}
-.sim-periogram th,.sim-periogram td{border-bottom:1px solid var(--line);padding:8px 5px;vertical-align:top}
+.sim-next{margin-top:18px;width:100%;justify-content:space-between}
+.sim-chart,.sim-guide{margin-top:24px;padding-top:19px;border-top:1px solid var(--line);font-size:13px;line-height:1.75}
+.sim-chart summary,.sim-guide summary{cursor:pointer;min-height:44px;font-weight:550;color:var(--ink)}
+.sim-chart dt{font-weight:550;margin-top:12px}
+.sim-chart dd{margin:4px 0 0;color:var(--muted)}
+.sim-guide p{color:var(--muted)}
 .sim-records{padding-left:20px;font-size:13px;line-height:1.65}
 .sim-records li{padding:8px 0}
 .sim-records p{margin:4px 0 0}
-.sim-field-status{margin:0 18px 18px;padding:12px;background:var(--paper);border-radius:8px;font-size:13px;line-height:1.6}
-.sim-jaw-control{display:flex;gap:12px;align-items:center;padding:8px 18px;font-size:13px}
-.sim-jaw-control input{flex:1;min-width:60px;accent-color:var(--green)}
-.sim-jaw-control span{min-width:28px;font-variant-numeric:tabular-nums}
-.sim-model-note{padding:0 18px;margin:10px 0}
-.sim-canvas-wrap{background:var(--viewer)}
-.sim-mouth #sim-canvas{height:370px}
-@media(max-width:850px){.sim-mouth #sim-canvas{height:330px}.sim-decision .sim-instruments{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:600px){.sim-mouth #sim-canvas{height:290px}.sim-decision .sim-instruments{grid-template-columns:repeat(3,minmax(0,1fr))}.sim-jaw-control{gap:8px;font-size:12px}.sim-periogram{font-size:11px}}
+.sim-periogram{width:100%;border-collapse:collapse;margin:16px 0;font-size:12px;font-variant-numeric:tabular-nums;text-align:left}
+.sim-periogram caption{text-align:left;font-weight:600;padding-bottom:8px}
+.sim-periogram th,.sim-periogram td{border-bottom:1px solid var(--line);padding:8px 5px;vertical-align:top}
+.sim-restart{margin-top:20px;font-size:12px;min-height:44px}
+#sim-restart-confirm{font-size:13px}
+.sim-summary{max-width:860px;margin:auto;padding:36px;background:var(--paper);border-radius:16px}
+.sim-summary h2{font-size:23px;margin:34px 0 15px}
+.sim-summary-response{padding:20px 24px;background:var(--sage);font-size:18px;border-radius:0 14px 14px 14px}
+.sim-debrief{padding-left:25px}
+.sim-debrief li{padding:15px 0;border-bottom:1px solid var(--line)}
+.sim-debrief li::marker{color:var(--muted)}
+.sim-debrief strong{font-size:16px;display:block}
+.sim-debrief span{display:block;font-size:12px;color:var(--muted);margin-top:5px}
+.sim-debrief p{font-size:14px;color:var(--muted);margin-bottom:0}
+.simulation-invite{display:grid;grid-template-columns:1fr 150px;overflow:hidden;border-radius:16px;background:var(--sage);margin-bottom:25px}
+.simulation-invite>div{padding:27px}
+.simulation-invite h2{font-size:26px;margin:0 0 8px;font-weight:550;letter-spacing:-.025em}
+.simulation-invite p{max-width:65ch;margin:0 0 18px;color:var(--muted)}
+.simulation-invite img{width:150px;height:100%;object-fit:cover;object-position:center 25%}
+/* Shared Atlas credit styles retained from the existing stylesheet. */
+.anatomy-credit{padding:12px 18px;margin:0;font-size:12px;color:var(--muted);line-height:1.65;background:#f0f4e8}
+.anatomy-mode{font-weight:550;color:var(--deep)}
+@media(max-width:1100px){
+ .sim-clinical-area{position:static}
+ .sim-room{grid-template-columns:minmax(0,1.1fr) minmax(280px,1fr);gap:18px}
+ .sim-decision{padding:20px}
+ .sim-intro>div{padding:30px}
+}
+@media(max-width:850px){
+ .sim-room{grid-template-columns:minmax(0,1fr);gap:20px}
+ .sim-instruments{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .sim-patient{grid-template-columns:64px 1fr}
+ .sim-patient>img{width:64px;height:85px}
+ .sim-intro{grid-template-columns:1fr 210px}
+ .sim-intro h1{font-size:33px}
+ .sim-heading h1{font-size:28px}
+ .sim-case-row{grid-template-columns:42px 1fr 105px 18px;gap:14px}
+ .sim-decision .sim-chart,.sim-decision .sim-guide{margin-top:18px}
+}
+@media(max-width:600px){
+ .sim-intro{grid-template-columns:1fr 110px;min-height:0}
+ .sim-intro>div{padding:23px 18px}
+ .sim-intro h1{font-size:28px}
+ .sim-intro p{font-size:14px}
+ .sim-intro .button-row{align-items:stretch;flex-direction:column}
+ .sim-intro-photo{max-height:100%;object-position:48% center}
+ .sim-case-row{grid-template-columns:36px 1fr 18px;gap:12px;padding:19px 0}
+ .sim-case-icon{width:34px;height:36px}
+ .sim-case-meta{display:none}
+ .sim-case-row strong{font-size:16px}
+ .sim-case-row span>span{font-size:13px}
+ .sim-heading{align-items:flex-start}
+ .sim-heading h1{font-size:25px}
+ .sim-step-count{font-size:12px}
+ .sim-heading p{font-size:13px}
+ .sim-progress{margin:16px 0 20px}
+ .sim-room{gap:16px}
+ .sim-patient{gap:13px}
+ .sim-patient-name span{display:none}
+ .sim-speech{font-size:14px;padding:12px}
+ .sim-mouth-top{font-size:14px;padding-left:14px;padding-right:14px}
+ .sim-mouth-top span{font-size:11px}
+ .sim-mouth-views{gap:3px;padding-left:8px}
+ .sim-mouth-figure figcaption{padding-left:14px;padding-right:14px}
+ .sim-field-status{margin-left:14px;margin-right:14px}
+ .sim-mouth-legend{padding-left:14px;padding-right:14px}
+ .sim-instruments{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .sim-periogram{font-size:11px}
+ .sim-summary{padding:23px}
+ .sim-summary h1{font-size:30px}
+ .sim-decision h2{font-size:21px}
+ .simulation-invite{grid-template-columns:1fr 85px}
+ .simulation-invite>div{padding:22px}
+ .simulation-invite img{width:85px}
+ .simulation-invite h2{font-size:23px}
+}
