@@ -1,10 +1,26 @@
-# odontoxiii — v8
+# odontoxiii — v9
 
-Web app em português para a graduação em odontologia. O Atlas agora abre o interior de um dente em corte, com tecidos selecionáveis e explicações junto ao modelo. O consultório preserva a boca em 2D da v7, com os sinais dos casos e os efeitos das ações em diagramas clínicos.
+Web app em português para a graduação em odontologia. A v9 acrescenta uma prévia do Caderno e IA: escreva, importe documentos e baixe seu rascunho. Contas e Gemini estão implementados, mas permanecem desativados até concluir a configuração e os documentos de lançamento. O Atlas nativo, o consultório em 2D e a jornada local foram preservados.
 
-**Consultório 2D:** https://hoshii23.github.io/odontoxiii/?v=8.0#simulacao
+**Caderno e IA:** https://hoshii23.github.io/odontoxiii/?v=9.0#caderno
 
-**Atlas 3D:** https://hoshii23.github.io/odontoxiii/?v=8.0#atlas
+**Consultório 2D:** https://hoshii23.github.io/odontoxiii/?v=9.0#simulacao
+
+**Atlas 3D:** https://hoshii23.github.io/odontoxiii/?v=9.0#atlas
+
+## Caderno pessoal e documentos
+
+Abra **Minha jornada → Abrir caderno e IA**. Na prévia sem conta, você pode escrever uma anotação, iniciar um caso fictício, importar **PDF, DOCX, TXT ou MD** e baixar o rascunho em texto. O rascunho fica nesta aba em `sessionStorage`; baixe uma cópia antes de fechá-la. A importação preenche o editor para revisão, sem salvar automaticamente. O arquivo original e suas imagens não são enviados ao armazenamento.
+
+Limites de importação: **10 MB**, **100 páginas por PDF** e **100 mil caracteres por nota**. Não há OCR: um PDF digitalizado precisa de extração externa. Tabelas, fórmulas, imagens e diagramação podem se perder. O leitor PDF.js 6.4.299 carrega do jsDelivr sob demanda e requer conexão e navegador compatível; DOCX usa JSZip 3.10.1 distribuído localmente. O formato DOC antigo não é aceito. Confira [dependências e licenças](dist/assets/STUDY-DEPENDENCIES.md) no projeto local; no pacote publicado, consulte `assets/STUDY-DEPENDENCIES.md` e `vendor/JSZIP-LICENSE.txt`.
+
+O fluxo preparado para lançamento inclui confirmação de e-mail, login, recuperação de senha, até 500 notas privadas por conta, exportação JSON, cópia explícita das notas locais anteriores, detecção de conflito entre versões e exclusão da conta com senha atual. A jornada anterior e as simulações permanecem no navegador, separadas da conta; a cópia de notas locais mantém as originais. Sessão e rascunhos da conta ficam na aba. Sair limpa a sessão, o rascunho da conta e a conversa; excluir a conta não apaga os arquivos baixados ou dados locais.
+
+A integração Gemini preparada permite escolher de uma a cinco notas e fazer uma pergunta de até 2 mil caracteres. O servidor envia até oito trechos de 1.600 caracteres classificados por relevância e até quatro mensagens anteriores; a resposta mostra os trechos enviados. A IA pode errar e não lê necessariamente os documentos inteiros. Cada envio exige confirmação, e trocar fontes inicia outra conversa. Conversas não são salvas pelo backend; há download em texto. Não há geração de novas simulações nesta entrega.
+
+O público inicial da integração é de **adultos no Brasil**, em uso educacional. Não registre dados identificáveis de pacientes. O Gemini gratuito pode usar entradas e respostas para melhoria de produtos e revisão humana; não envie informações pessoais, confidenciais ou sensíveis. As cotas iniciais são 20 tentativas por conta e 200 no site por dia, além dos limites do provedor. Falhas posteriores podem consumir tentativas. Não há contratação automática de plano pago nem promessa de gratuidade ilimitada.
+
+O projeto Supabase dedicado gratuito em São Paulo está ativo, com esquema e funções implantados. A configuração pública mantém URL e chave vazias e `accountsEnabled`, `aiEnabled`, `legalReady` em `false`. SMTP, redirects e segredo Gemini ainda precisam ser configurados. As páginas **Privacidade** e **Termos de uso** são minutas não vigentes, versão `2026-10-23`; o usuário adiou identificação do controlador e contato até o lançamento. Consulte o [checklist de configuração e abertura](backend/README.md). A existência do backend não torna contas ou IA públicas nesta prévia.
 
 ## Consultório simulado em 2D
 
@@ -21,7 +37,7 @@ O diagrama SVG acompanha os registros das ações e mostra cálculo, biofilme, m
 
 Cada etapa precisa ser concluída antes de continuar, e uma ação concluída não pode ser repetida nessa etapa. Os procedimentos são condensados: dose, punção, força e técnica manual exigem avaliação individual e prática supervisionada. O retrato de Lia é gerado por IA; casos, diagramas e medidas são fictícios e não permitem medidas clínicas.
 
-O último atendimento é salvo no navegador pela chave `odontoxiii-simulation-v6`, com `version: 6`, separado da jornada e de sua exportação. A v8 mantém a sequência dos casos e a compatibilidade com históricos v6 válidos, usados para reconstruir a boca em 2D. Só a sequência válida de etapas concluídas e avançadas é retomada; sair antes de continuar refaz a etapa atual. Registros anteriores à versão 6 não são migrados; jornada, anotações e revisões são preservadas. Não há contas, backend ou sincronização entre dispositivos.
+O último atendimento é salvo no navegador pela chave `odontoxiii-simulation-v6`, com `version: 6`, separado da jornada, de sua exportação e do novo caderno. A v9 mantém a sequência dos casos e a compatibilidade com históricos v6 válidos, usados para reconstruir a boca em 2D. Só a sequência válida de etapas concluídas e avançadas é retomada; sair antes de continuar refaz a etapa atual. Registros anteriores à versão 6 não são migrados; jornada, anotações e revisões são preservadas. Jornada e simulações não têm sincronização automática entre dispositivos.
 
 ## Atlas 3D e referências clínicas
 
@@ -53,7 +69,7 @@ As malhas nativas têm restrição não comercial, atribuição e limites de res
 
 O estudo nativo usa núcleos fechados pré-gerados em `dist/study-core-assets.js`, ativados pelo modo opcional `DentalAtlas.studyMode`. A preparação em `tools/pack-study-core.py` usa voxelização do interior da fonte em grade de 0,045 unidades de exibição, distância para dentro, marching tetrahedra e oito passes de suavização restrita; verifica vértices dentro da fonte e exatamente duas faces por aresta. Esses controles geométricos não validam a anatomia clinicamente.
 
-Os diagramas clínicos são SVGs gerados em tempo de execução. A v8 não acrescenta imagens rasterizadas ao pacote; o retrato existente mantém sua proveniência.
+Os diagramas clínicos são SVGs gerados em tempo de execução. A v9 não acrescenta imagens rasterizadas ao pacote; o retrato existente mantém sua proveniência. `DESIGN.md` e `.impeccable/design.json` foram preservados, sem mudança de sistema visual.
 
 ## Executar e publicar
 
@@ -63,13 +79,30 @@ Na raiz do projeto local, sirva `dist/` por HTTP:
 python3 -m http.server 8000 --directory dist
 ```
 
-Abra `http://localhost:8000/#simulacao` ou `http://localhost:8000/#atlas`. Não há dependências de build. O uso do servidor depende das permissões de rede do ambiente.
+Abra `http://localhost:8000/#caderno`, `#simulacao` ou `#atlas`. Não há dependências de build. O uso do servidor depende das permissões de rede do ambiente. A configuração padrão mantém a prévia sem conta e sem IA.
 
-GitHub Pages publica `main` na raiz de `Hoshii23/odontoxiii`. Esse repositório contém o conteúdo de `dist/`, README e `.nojekyll`, enquanto o projeto local também contém fontes de preparação e testes. Para servir uma cópia do repositório publicado, execute `python3 -m http.server 8000` na sua raiz. Para publicar, crie um commit baseado no HEAD remoto e preserve arquivos não relacionados; o histórico local é diferente. Consulte `CHECKPOINT.md` no projeto local.
+GitHub Pages publica `main` na raiz de `Hoshii23/odontoxiii`. O pacote v9 inclui o conteúdo de `dist/` na raiz, README, `.nojekyll` e `backend/` com código, SQL e instruções sem segredos. No projeto local, há também fontes de preparação e testes. GitHub Pages serve a interface estática; as funções e o banco executam no Supabase. Para servir uma cópia do repositório publicado, execute `python3 -m http.server 8000` na sua raiz. Para publicar, crie um commit baseado no HEAD remoto e preserve arquivos não relacionados; o histórico local é diferente. Consulte `CHECKPOINT.md` no projeto local. A publicação precisa de confirmação separada; este README não é evidência de deploy.
 
 ## Evidência de verificação
 
-Os testes abaixo passaram na v8. Execute-os na raiz do projeto local, onde existe `tests/`:
+Na v9 passaram, na raiz do projeto local:
+
+```sh
+node tests/study-assistant.mjs
+node tests/study-account.cjs
+node tests/study-space.cjs
+node tests/study-import.cjs
+node tests/study-flows.cjs
+node tests/simulation-flows.cjs
+```
+
+`study-assistant` usa HTTP/provedores simulados; `study-account` simula HTTP; `study-space` usa harness DOM. `study-import` decodifica ZIP real com JSZip, mas simula o DOM XML. PDF.js e importação em navegador não foram testados. As regressões de jornada, Atlas e consultório passaram nos dois testes de fluxo.
+
+`backend/verify-rls.sql` passou no Supabase real com usuários sintéticos, transação e rollback: isolamento por proprietário, falsificação/reatribuição de dono, negação a anônimos, sessão revogada, limite de texto, versão, cota por conta e cascata de exclusão. As funções `study-assistant` v1 e `study-account` v1 estão ACTIVE com `verify_jwt: true`. Advisors finais sem WARN/ERROR; o INFO de RLS sem políticas em `private.study_ai_usage` corresponde à negação direta aos clientes, sem privilégios de acesso à tabela.
+
+A revisão independente da v9 emitiu **SHIP** somente para markup/CSS estático, controladores, semântica dos dados e prévia com serviços inativos. O acabamento visual não foi avaliado. `.impeccable/review/v9-markup/` contém snapshots de markup, sem screenshots. O proxy de rede do runtime estava indisponível; `cua_repl.js` e o lançador de contexto/detector estavam ausentes. Login e recuperação reais, entrega de e-mail, sincronização/conflitos em dois navegadores, exclusão de conta real, Gemini, PDF, layout no navegador e iPad precisam de homologação antes da ativação.
+
+Os testes abaixo são evidência histórica da v8, sem nova alegação de execução na v9:
 
 ```sh
 node tests/capture-interior.cjs
