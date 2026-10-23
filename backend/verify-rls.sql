@@ -1,8 +1,9 @@
 -- Synthetic transactional fixtures; always roll back, no live user data.
 begin;
-insert into auth.users(id,email) values
- ('00000000-0000-4000-9000-000000000901','rls-a@example.invalid'),
- ('00000000-0000-4000-9000-000000000902','rls-b@example.invalid');
+insert into private.study_beta_invites(email) values('rls-a@example.invalid'),('rls-b@example.invalid');
+insert into auth.users(id,email,email_confirmed_at) values
+ ('00000000-0000-4000-9000-000000000901','rls-a@example.invalid',now()),
+ ('00000000-0000-4000-9000-000000000902','rls-b@example.invalid',now());
 insert into auth.sessions(id,user_id) values
  ('00000000-0000-4000-8000-000000000901','00000000-0000-4000-9000-000000000901'),
  ('00000000-0000-4000-8000-000000000902','00000000-0000-4000-9000-000000000902');
@@ -34,6 +35,16 @@ set local role anon;
 do $$ begin
  begin perform * from public.study_notes;raise exception 'Anonymous read allowed';exception when insufficient_privilege then null;end;
  begin perform public.consume_study_ai_quota();raise exception 'Anonymous quota allowed';exception when insufficient_privilege then null;end;
+end $$;
+reset role;
+update private.study_beta_invites set enabled=false where email='rls-a@example.invalid';
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"00000000-0000-4000-9000-000000000901","role":"authenticated","session_id":"00000000-0000-4000-8000-000000000901"}',true);
+do $$ begin
+ if public.study_access_allowed() then raise exception 'Revoked invite allowed'; end if;
+ if (public.study_ai_runtime()->>'enabled')::boolean then raise exception 'AI allowed after invite revocation'; end if;
+ if (select count(*) from public.study_notes)<>1 then raise exception 'Owner export unavailable after invite revocation'; end if;
+ begin update public.study_notes set body='Denied after revocation';raise exception 'Write after invite revocation';exception when insufficient_privilege then null;end;
 end $$;
 reset role;
 delete from auth.sessions where user_id='00000000-0000-4000-9000-000000000901';

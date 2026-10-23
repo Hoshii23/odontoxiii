@@ -5,7 +5,7 @@
   let session=null,refreshing=null,epoch=0;
   const listeners=new Set();
   class StudyError extends Error {constructor(message,status=0,code=''){super(message);this.status=status;this.code=code;}}
-  const configured=()=>cfg.accountsEnabled===true&&cfg.legalReady===true&&/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(cfg.supabaseUrl||'')&&/^sb_publishable_/.test(cfg.supabasePublishableKey||'');
+  const configured=()=>cfg.accountsEnabled===true&&(cfg.legalReady===true||cfg.accessMode==='closed_beta')&&/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(cfg.supabaseUrl||'')&&/^sb_publishable_/.test(cfg.supabasePublishableKey||'');
   function emit(){for(const f of listeners)f(session?.user||null);}
   function setSession(value){session=value?.access_token&&value?.refresh_token?{access_token:value.access_token,refresh_token:value.refresh_token,expires_at:value.expires_at||Math.floor(Date.now()/1000)+(value.expires_in||3600),user:value.user||null}:null;try{if(session)sessionStorage.setItem(KEY,JSON.stringify(session));else sessionStorage.removeItem(KEY);}catch{}emit();}
   function clear(){epoch++;setSession(null);}
@@ -40,6 +40,7 @@
     if(session){try{const user=await request('/auth/v1/user');setSession({...session,user});}catch(e){clear();throw e;}}
   }
   const api={configured,initialize,get user(){return session?.user||null;},onChange(f){listeners.add(f);return()=>listeners.delete(f);},
+    async access(){return await request('/rest/v1/rpc/study_access_allowed',{method:'POST',body:{}})===true;},
     async signIn(email,password){const s=await raw('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password}});epoch++;setSession(s);},
     async signUp(email,password){return raw('/auth/v1/signup?redirect_to='+encodeURIComponent(redirect()),{method:'POST',body:{email,password}});},
     async recover(email){await raw('/auth/v1/recover?redirect_to='+encodeURIComponent(redirect()),{method:'POST',body:{email}});},
@@ -51,7 +52,12 @@
     async save(note){const body={title:note.title,body:note.body,subject:note.subject||'',kind:note.kind||'nota'};if(note.id){const rows=await request('/rest/v1/study_notes?id=eq.'+encodeURIComponent(note.id)+'&version=eq.'+encodeURIComponent(note.version),{method:'PATCH',body,headers:{Prefer:'return=representation'}});if(!rows?.length)throw new StudyError('Esta anotação mudou ou foi excluída em outro aparelho. Seu texto foi mantido. Recarregue as notas para conferir.',409);return rows[0];}const rows=await request('/rest/v1/study_notes',{method:'POST',body:{...body,user_id:session.user.id},headers:{Prefer:'return=representation'}});return rows[0];},
     async remove(id){const rows=await request('/rest/v1/study_notes?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{Prefer:'return=representation'}});if(!rows?.length)throw new StudyError('A anotação já foi excluída ou não está acessível. Recarregue a lista.',409);},
     async importLocal(notes){for(const n of notes.slice(0,500)){await request('/rest/v1/study_notes?on_conflict=user_id,source_key',{method:'POST',body:{user_id:session.user.id,title:n.title.slice(0,120),body:n.body.slice(0,20000),subject:'Importado deste aparelho',kind:'nota',source_key:'local:'+n.id},headers:{Prefer:'resolution=ignore-duplicates'}});}},
-    async ask(noteIds,question,conversation){return request('/functions/v1/study-assistant',{method:'POST',body:{noteIds,question,conversation,consent:{version:cfg.legalVersion,nonPersonal:true,brazilAdult:true}}});},
+    async ask(noteIds,question,conversation){
+      const history=(Array.isArray(conversation)?conversation:[]).slice(-4).filter(m=>m&&['user','assistant'].includes(m.role)&&typeof m.text==='string').map(m=>({role:m.role,text:m.text.slice(0,2000)}));
+      const body={noteIds,question,conversation:history,consent:{version:cfg.legalVersion,nonPersonal:true,brazilAdult:true}};
+      while(history.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>18000)history.shift();
+      return request('/functions/v1/study-assistant',{method:'POST',body});
+    },
     async deleteAccount(password){await request('/functions/v1/study-account',{method:'POST',body:{password,confirmation:'EXCLUIR'}});clear();}
   };
   window.StudyAPI=api;

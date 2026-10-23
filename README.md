@@ -1,26 +1,30 @@
-# odontoxiii — v9
+# odontoxiii — v10
 
-Web app em português para a graduação em odontologia. A v9 acrescenta uma prévia do Caderno e IA: escreva, importe documentos e baixe seu rascunho. Contas e Gemini estão implementados, mas permanecem desativados até concluir a configuração e os documentos de lançamento. O Atlas nativo, o consultório em 2D e a jornada local foram preservados.
+Web app em português para a graduação em odontologia. A v10 ativa login, notas privadas e perguntas reais ao Gemini para **contas convidadas em teste fechado**. O caderno sem conta continua disponível para escrever, importar e baixar rascunhos. O Atlas nativo, o consultório em 2D e a jornada local foram preservados.
 
-**Caderno e IA:** https://hoshii23.github.io/odontoxiii/?v=9.0#caderno
+**Entrar no teste fechado:** https://hoshii23.github.io/odontoxiii/?v=10.0#conta
 
-**Consultório 2D:** https://hoshii23.github.io/odontoxiii/?v=9.0#simulacao
+**Caderno e IA:** https://hoshii23.github.io/odontoxiii/?v=10.0#caderno
 
-**Atlas 3D:** https://hoshii23.github.io/odontoxiii/?v=9.0#atlas
+**Consultório 2D:** https://hoshii23.github.io/odontoxiii/?v=10.0#simulacao
+
+**Atlas 3D:** https://hoshii23.github.io/odontoxiii/?v=10.0#atlas
 
 ## Caderno pessoal e documentos
 
-Abra **Minha jornada → Abrir caderno e IA**. Na prévia sem conta, você pode escrever uma anotação, iniciar um caso fictício, importar **PDF, DOCX, TXT ou MD** e baixar o rascunho em texto. O rascunho fica nesta aba em `sessionStorage`; baixe uma cópia antes de fechá-la. A importação preenche o editor para revisão, sem salvar automaticamente. O arquivo original e suas imagens não são enviados ao armazenamento.
+Abra **Minha conta** e entre com o e-mail convidado e a senha da sua conta. O acesso exige conta com e-mail confirmado e convite habilitado pelo operador. Cadastro público e recuperação por e-mail estão ocultos; SMTP ainda não foi configurado. O dono criou sua conta com senha pelo Supabase Dashboard. Para definir ou recuperar uma senha nesta fase, fale com quem liberou o acesso; não compartilhe credenciais.
+
+Após entrar, aceite as condições experimentais para salvar até 500 notas privadas, editar com detecção de conflito de versão, exportar o caderno em JSON, copiar explicitamente notas locais anteriores e excluir a conta com senha atual. A jornada e as simulações anteriores permanecem no navegador, separadas da conta; copiar notas locais mantém as originais. Revogar um convite bloqueia novas escritas e IA, mas mantém leitura, exportação e exclusão dos dados próprios. Sessão e rascunhos da conta ficam na aba. Sair limpa a sessão, o rascunho da conta e a conversa; excluir a conta não apaga arquivos baixados ou dados locais.
+
+Em **Minha jornada → Abrir caderno e IA**, também é possível experimentar sem conta: escrever uma anotação, iniciar um caso fictício, importar **PDF, DOCX, TXT ou MD** e baixar o rascunho em texto. O rascunho fica nesta aba em `sessionStorage`; baixe uma cópia antes de fechá-la. A importação preenche o editor para revisão, sem salvar automaticamente. O arquivo original e suas imagens não são enviados ao armazenamento.
 
 Limites de importação: **10 MB**, **100 páginas por PDF** e **100 mil caracteres por nota**. Não há OCR: um PDF digitalizado precisa de extração externa. Tabelas, fórmulas, imagens e diagramação podem se perder. O leitor PDF.js 6.4.299 carrega do jsDelivr sob demanda e requer conexão e navegador compatível; DOCX usa JSZip 3.10.1 distribuído localmente. O formato DOC antigo não é aceito. Confira [dependências e licenças](dist/assets/STUDY-DEPENDENCIES.md) no projeto local; no pacote publicado, consulte `assets/STUDY-DEPENDENCIES.md` e `vendor/JSZIP-LICENSE.txt`.
 
-O fluxo preparado para lançamento inclui confirmação de e-mail, login, recuperação de senha, até 500 notas privadas por conta, exportação JSON, cópia explícita das notas locais anteriores, detecção de conflito entre versões e exclusão da conta com senha atual. A jornada anterior e as simulações permanecem no navegador, separadas da conta; a cópia de notas locais mantém as originais. Sessão e rascunhos da conta ficam na aba. Sair limpa a sessão, o rascunho da conta e a conversa; excluir a conta não apaga os arquivos baixados ou dados locais.
+Para perguntar ao Gemini, escolha de uma a cinco notas e escreva uma pergunta de até 2 mil caracteres. O servidor envia até oito trechos de 1.600 caracteres classificados por relevância. O contexto usa no máximo as quatro mensagens anteriores válidas, limitadas a 2 mil caracteres cada; as mais antigas são removidas do envio se necessário para caber no limite de 18 mil bytes da requisição, sem apagar o histórico na tela ou a pergunta. A resposta mostra os trechos enviados. A IA pode errar e não lê necessariamente os documentos inteiros. Cada envio exige confirmação, e trocar fontes inicia outra conversa. Conversas não são salvas pelo backend; há download em texto. Não há geração de novas simulações nesta entrega.
 
-A integração Gemini preparada permite escolher de uma a cinco notas e fazer uma pergunta de até 2 mil caracteres. O servidor envia até oito trechos de 1.600 caracteres classificados por relevância e até quatro mensagens anteriores; a resposta mostra os trechos enviados. A IA pode errar e não lê necessariamente os documentos inteiros. Cada envio exige confirmação, e trocar fontes inicia outra conversa. Conversas não são salvas pelo backend; há download em texto. Não há geração de novas simulações nesta entrega.
+O público inicial é de **adultos no Brasil**, em uso educacional. Não registre dados identificáveis de pacientes. O Gemini gratuito pode usar entradas e respostas para melhoria de produtos e revisão humana; não envie informações pessoais, confidenciais ou sensíveis. As cotas iniciais são 20 tentativas por conta e 200 no site por dia, além dos limites do provedor. Falhas posteriores podem consumir tentativas. O modelo configurado é `gemini-3.6-flash`, cuja modalidade gratuita foi conferida na [tabela oficial](https://ai.google.dev/gemini-api/docs/pricing) em 23/10/2026. `gemini-3.8-flash` retornou 503 por alta demanda; não foi ativado fallback automático ou plano pago. Não há promessa de gratuidade ilimitada ou disponibilidade contínua.
 
-O público inicial da integração é de **adultos no Brasil**, em uso educacional. Não registre dados identificáveis de pacientes. O Gemini gratuito pode usar entradas e respostas para melhoria de produtos e revisão humana; não envie informações pessoais, confidenciais ou sensíveis. As cotas iniciais são 20 tentativas por conta e 200 no site por dia, além dos limites do provedor. Falhas posteriores podem consumir tentativas. Não há contratação automática de plano pago nem promessa de gratuidade ilimitada.
-
-O projeto Supabase dedicado gratuito em São Paulo está ativo, com esquema e funções implantados. A configuração pública mantém URL e chave vazias e `accountsEnabled`, `aiEnabled`, `legalReady` em `false`. SMTP, redirects e segredo Gemini ainda precisam ser configurados. As páginas **Privacidade** e **Termos de uso** são minutas não vigentes, versão `2026-10-23`; o usuário adiou identificação do controlador e contato até o lançamento. Consulte o [checklist de configuração e abertura](backend/README.md). A existência do backend não torna contas ou IA públicas nesta prévia.
+O projeto Supabase gratuito dedicado em São Paulo está ativo. A configuração pública tem URL e chave publishable preenchidas, `accountsEnabled: true`, `aiEnabled: true`, `accessMode: 'closed_beta'` e `legalReady: false`. As páginas **Privacidade** e **Termos de uso** continuam como minutas não vigentes, versão `2026-10-23`; o usuário adiou identificação do controlador e contato até o lançamento público. Essa pendência não bloqueia o teste fechado autorizado. A operação, os controles de convite e os requisitos para abertura pública estão em [backend/README.md](backend/README.md).
 
 ## Consultório simulado em 2D
 
@@ -37,7 +41,7 @@ O diagrama SVG acompanha os registros das ações e mostra cálculo, biofilme, m
 
 Cada etapa precisa ser concluída antes de continuar, e uma ação concluída não pode ser repetida nessa etapa. Os procedimentos são condensados: dose, punção, força e técnica manual exigem avaliação individual e prática supervisionada. O retrato de Lia é gerado por IA; casos, diagramas e medidas são fictícios e não permitem medidas clínicas.
 
-O último atendimento é salvo no navegador pela chave `odontoxiii-simulation-v6`, com `version: 6`, separado da jornada, de sua exportação e do novo caderno. A v9 mantém a sequência dos casos e a compatibilidade com históricos v6 válidos, usados para reconstruir a boca em 2D. Só a sequência válida de etapas concluídas e avançadas é retomada; sair antes de continuar refaz a etapa atual. Registros anteriores à versão 6 não são migrados; jornada, anotações e revisões são preservadas. Jornada e simulações não têm sincronização automática entre dispositivos.
+O último atendimento é salvo no navegador pela chave `odontoxiii-simulation-v6`, com `version: 6`, separado da jornada, de sua exportação e do novo caderno. A v10 mantém a sequência dos casos e a compatibilidade com históricos v6 válidos, usados para reconstruir a boca em 2D. Só a sequência válida de etapas concluídas e avançadas é retomada; sair antes de continuar refaz a etapa atual. Registros anteriores à versão 6 não são migrados; jornada, anotações e revisões são preservadas. Jornada e simulações não têm sincronização automática entre dispositivos.
 
 ## Atlas 3D e referências clínicas
 
@@ -69,7 +73,7 @@ As malhas nativas têm restrição não comercial, atribuição e limites de res
 
 O estudo nativo usa núcleos fechados pré-gerados em `dist/study-core-assets.js`, ativados pelo modo opcional `DentalAtlas.studyMode`. A preparação em `tools/pack-study-core.py` usa voxelização do interior da fonte em grade de 0,045 unidades de exibição, distância para dentro, marching tetrahedra e oito passes de suavização restrita; verifica vértices dentro da fonte e exatamente duas faces por aresta. Esses controles geométricos não validam a anatomia clinicamente.
 
-Os diagramas clínicos são SVGs gerados em tempo de execução. A v9 não acrescenta imagens rasterizadas ao pacote; o retrato existente mantém sua proveniência. `DESIGN.md` e `.impeccable/design.json` foram preservados, sem mudança de sistema visual.
+Os diagramas clínicos são SVGs gerados em tempo de execução. A v10 não acrescenta imagens rasterizadas ao pacote; o retrato existente mantém sua proveniência. `DESIGN.md` e `.impeccable/design.json` foram preservados, sem mudança de sistema visual.
 
 ## Executar e publicar
 
@@ -79,30 +83,29 @@ Na raiz do projeto local, sirva `dist/` por HTTP:
 python3 -m http.server 8000 --directory dist
 ```
 
-Abra `http://localhost:8000/#caderno`, `#simulacao` ou `#atlas`. Não há dependências de build. O uso do servidor depende das permissões de rede do ambiente. A configuração padrão mantém a prévia sem conta e sem IA.
+Abra `http://localhost:8000/#conta`, `#caderno`, `#simulacao` ou `#atlas`. Não há dependências de build. A configuração atual aponta para o backend do teste fechado; a origem local precisa ser autorizada explicitamente no servidor para chamadas às Edge Functions. A experiência sem conta continua disponível. O uso do servidor depende das permissões de rede do ambiente.
 
-GitHub Pages publica `main` na raiz de `Hoshii23/odontoxiii`. O pacote v9 inclui o conteúdo de `dist/` na raiz, README, `.nojekyll` e `backend/` com código, SQL e instruções sem segredos. No projeto local, há também fontes de preparação e testes. GitHub Pages serve a interface estática; as funções e o banco executam no Supabase. Para servir uma cópia do repositório publicado, execute `python3 -m http.server 8000` na sua raiz. Para publicar, crie um commit baseado no HEAD remoto e preserve arquivos não relacionados; o histórico local é diferente. Consulte `CHECKPOINT.md` no projeto local. A publicação precisa de confirmação separada; este README não é evidência de deploy.
+GitHub Pages publica `main` na raiz de `Hoshii23/odontoxiii`. O pacote v10 inclui o conteúdo de `dist/` na raiz, README, `.nojekyll` e `backend/` com código, SQL e instruções sem segredos. No projeto local, há também fontes de preparação e testes. GitHub Pages serve a interface estática; as funções e o banco executam no Supabase. Para servir uma cópia do repositório publicado, execute `python3 -m http.server 8000` na sua raiz. Para publicar, crie um commit baseado no HEAD remoto e preserve arquivos não relacionados; o histórico local é diferente. Consulte `CHECKPOINT.md` no projeto local. Este README não é evidência de deploy.
 
 ## Evidência de verificação
 
-Na v9 passaram, na raiz do projeto local:
+Na v10 passaram, na raiz do projeto local:
 
 ```sh
 node tests/study-assistant.mjs
 node tests/study-account.cjs
 node tests/study-space.cjs
-node tests/study-import.cjs
-node tests/study-flows.cjs
-node tests/simulation-flows.cjs
 ```
 
-`study-assistant` usa HTTP/provedores simulados; `study-account` simula HTTP; `study-space` usa harness DOM. `study-import` decodifica ZIP real com JSZip, mas simula o DOM XML. PDF.js e importação em navegador não foram testados. As regressões de jornada, Atlas e consultório passaram nos dois testes de fluxo.
+Os dois primeiros usam HTTP/provedores simulados; `study-space` usa harness DOM. A cobertura inclui o recorte de histórico longo e UTF-8 ao limite da requisição, preservando pergunta e histórico da interface. Os resultados v9 de `study-import.cjs`, `study-flows.cjs` e `simulation-flows.cjs` permanecem como evidência histórica. `study-import` decodifica ZIP real com JSZip e simula o DOM XML; PDF.js e importação em navegador não foram testados.
 
-`backend/verify-rls.sql` passou no Supabase real com usuários sintéticos, transação e rollback: isolamento por proprietário, falsificação/reatribuição de dono, negação a anônimos, sessão revogada, limite de texto, versão, cota por conta e cascata de exclusão. As funções `study-assistant` v1 e `study-account` v1 estão ACTIVE com `verify_jwt: true`. Advisors finais sem WARN/ERROR; o INFO de RLS sem políticas em `private.study_ai_usage` corresponde à negação direta aos clientes, sem privilégios de acesso à tabela.
+A integração HTTP real v10, com contas descartáveis, passou em login por senha, convites e negação a não convidados, criação, leitura e edição de notas, versão/conflito, isolamento entre donos, renovação de sessão, resposta real do Gemini com citação `[1]` e exclusão de conta. A evidência sanitizada está em `.impeccable/review/v10-runtime-evidence.json`. Ao final foram confirmados zero usuários e convites sintéticos; RPCs/tabelas temporárias e `pg_net` foram removidos. O checker temporário está inerte, retorna HTTP 410 e mantém `verify_jwt: true`. As funções principais `study-assistant` v9 e `study-account` v9 estão ACTIVE com `verify_jwt: true`.
 
-A revisão independente da v9 emitiu **SHIP** somente para markup/CSS estático, controladores, semântica dos dados e prévia com serviços inativos. O acabamento visual não foi avaliado. `.impeccable/review/v9-markup/` contém snapshots de markup, sem screenshots. O proxy de rede do runtime estava indisponível; `cua_repl.js` e o lançador de contexto/detector estavam ausentes. Login e recuperação reais, entrega de e-mail, sincronização/conflitos em dois navegadores, exclusão de conta real, Gemini, PDF, layout no navegador e iPad precisam de homologação antes da ativação.
+`backend/verify-rls.sql` passou na v9 com usuários sintéticos, transação e rollback. As tentativas de executar o script completo na v10 expiraram no conector (`requestState expired`) ou foram canceladas: **não são PASS**. Os testes HTTP v10 são uma evidência distinta, sem cobrir todos os limites sob concorrência. Os advisors atuais têm três INFO de tabelas privadas com negação por padrão e um WARN de proteção contra senhas vazadas desabilitada; veja a [documentação de correção](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). Não houve alteração paga.
 
-Os testes abaixo são evidência histórica da v8, sem nova alegação de execução na v9:
+A revisão independente final da v10 emitiu **SHIP** no escopo de código estático, markup e evidência HTTP, após corrigir o envio de histórico longo. Não avaliou acabamento visual em navegador. `.impeccable/review/v10-markup/` contém somente snapshots HTML de conta e caderno; não houve screenshots ou novos rasters. Login e Gemini reais foram verificados por HTTP, mas layout em navegador, dois navegadores, iPad, tecnologia assistiva, SMTP/recuperação e PDF.js real seguem sem homologação. O SHIP anterior da v9 cobria markup/CSS estático, controladores, semântica dos dados e a prévia com serviços inativos.
+
+Os testes abaixo são evidência histórica da v8, sem nova alegação de execução na v10:
 
 ```sh
 node tests/capture-interior.cjs
