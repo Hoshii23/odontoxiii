@@ -58,6 +58,14 @@
       while(history.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>18000)history.shift();
       return request('/functions/v1/study-assistant',{method:'POST',body});
     },
+    async chat({question,context=[],useNotebook=false,conversation=[]}){
+      const history=(Array.isArray(conversation)?conversation:[]).slice(-4).filter(m=>m&&['user','assistant'].includes(m.role)&&typeof m.text==='string').map(m=>({role:m.role,text:m.text.slice(0,2000)}));
+      const sources=context.filter(c=>c&&['page','draft'].includes(c.kind)).slice(0,2).map(c=>({kind:c.kind,title:String(c.title||'').slice(0,160),body:String(c.body||'').slice(0,6000)}));
+      const body={noteIds:[],question,useNotebook,context:sources,conversation:history,consent:{version:cfg.legalVersion,nonPersonal:true,brazilAdult:true}};
+      while(history.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>58000)history.shift();
+      while(sources.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>58000){const largest=sources.reduce((a,b)=>a.body.length>b.body.length?a:b);largest.body=largest.body.slice(0,Math.floor(largest.body.length*.8));if(!largest.body.length)sources.splice(sources.indexOf(largest),1);}
+      return request('/functions/v1/study-assistant',{method:'POST',body});
+    },
     async deleteAccount(password){await request('/functions/v1/study-account',{method:'POST',body:{password,confirmation:'EXCLUIR'}});clear();}
   };
   window.StudyAPI=api;

@@ -1,15 +1,15 @@
-# Backend do Caderno e IA — v10
+# Backend do Caderno e Xii — v11
 
 O backend usa Supabase Auth, Postgres e Edge Functions para notas privadas e perguntas ao Gemini. GitHub Pages serve a interface estática; publicar esta pasta não executa SQL nem funções. Esta pasta contém código e instruções, sem credenciais.
 
-## Estado em 23/10/2026
+## Estado em 24/10/2026
 
 - Projeto dedicado no plano gratuito em `enricodev`, região São Paulo, referência `wmbkfxpnwzdtljmfqorn`, status `ACTIVE_HEALTHY`.
 - `schema.sql` foi aplicado ao projeto inicialmente vazio na v9. `closed-beta.sql` é a extensão incremental da v10 e já foi aplicada: convites privados por e-mail verificado e configuração privada da IA.
-- `study-assistant` v9 e `study-account` v9 estão ACTIVE com `verify_jwt: true`.
+- `study-assistant` v11 e `study-account` v9 estão ACTIVE com `verify_jwt: true`. A função de conta não mudou na v11.
 - URL e chave publishable estão preenchidas no cliente; `accountsEnabled: true`, `aiEnabled: true`, `accessMode: 'closed_beta'` e `legalReady: false`. Login, notas e IA funcionam para convidados; cadastro público e recuperação por e-mail estão ocultos na interface.
 - O dono criou sua conta com senha pelo Supabase Dashboard. SMTP não está configurado. Não há senha, e-mail de convidado ou segredo de provedor nesta documentação.
-- A IA está habilitada na configuração privada com `gemini-3.6-flash`. A modalidade gratuita foi conferida na [tabela oficial de preços](https://ai.google.dev/gemini-api/docs/pricing) em 23/10/2026. `gemini-3.8-flash` retornou 503 por alta demanda; não há fallback automático nem cobrança paga ativada.
+- A IA está habilitada na configuração privada com `gemini-3.5-flash-lite`, usado nas respostas HTTP reais da v11. Há novas tentativas limitadas e alternativo gratuito `gemini-3.6-flash`. A modalidade gratuita foi conferida na [tabela oficial de preços](https://ai.google.dev/gemini-api/docs/pricing); nenhuma cobrança paga foi ativada.
 - Privacidade e termos continuam como minutas não vigentes, versão `2026-10-23`. Nome do controlador e contato foram explicitamente adiados pelo usuário até o lançamento público; essa pendência não bloqueia o teste fechado autorizado.
 
 ## Arquivos e contratos
@@ -18,8 +18,8 @@ O backend usa Supabase Auth, Postgres e Edge Functions para notas privadas e per
 | --- | --- |
 | `schema.sql` | Bootstrap v9 de um projeto novo: perfil de aceite, notas, RLS, sessão ativa, versão, limites e contador de IA. |
 | `closed-beta.sql` | Extensão incremental para o banco v9: lista privada de convidados, bloqueio de novas escritas/IA sem convite e configuração privada de modelo/ativação. |
-| `verify-rls.sql` | Verificação transacional com usuários sintéticos e rollback; a nova execução v10 não foi concluída. |
-| `functions/shared/handler.mjs` | Handler compartilhado de autenticação, limites, busca de trechos, Gemini e exclusão. |
+| `verify-rls.sql` | Verificação transacional com usuários sintéticos e rollback: PASS v9; tentativas v10 expiradas/canceladas, sem nova execução integral v11. |
+| `functions/shared/handler.mjs` | Handler compartilhado de autenticação, limites, busca do caderno, fontes de página/rascunho, Gemini com retries e exclusão. |
 | `functions/study-assistant/index.ts` | Entrada Deno da função de perguntas. |
 | `functions/study-account/index.ts` | Entrada Deno da função de exclusão de conta. |
 
@@ -29,14 +29,14 @@ Notas e perfis exigem proprietário autenticado com sessão ativa em `auth.sessi
 
 Salvar uma edição filtra `id` e `version`; uma versão antiga mantém o texto no editor e pede recarga da lista. O contador de IA é atômico, deriva o dono da sessão, exige convite e aceite da versão registrada no perfil e fica no schema privado, com wrapper público `SECURITY INVOKER`. Esse aceite experimental não torna as minutas vigentes. Não há bucket ou upload dos arquivos originais.
 
-A função de perguntas autentica usuário e sessão, confirma e-mail e convite, valida consentimento, consulta somente suas notas e envia trechos ao Gemini. A função de conta confirma a senha atual, encerra sessões globalmente e exclui o usuário; as chaves estrangeiras removem perfil, notas e contadores ativos. Isso não promete eliminação imediata de backups ou registros mantidos por fornecedores.
+A função de perguntas autentica usuário e sessão, confirma e-mail, convite e aceite da conta, valida consentimento e envia somente as fontes habilitadas ao Gemini. Pode responder sem notas; quando a busca está ligada, consulta somente notas do dono autenticado. O assistente não modifica notas nem pesquisa na internet. A função de conta confirma a senha atual, encerra sessões globalmente e exclui o usuário; as chaves estrangeiras removem perfil, notas e contadores ativos. Isso não promete eliminação imediata de backups ou registros mantidos por fornecedores.
 
 ## Operar o teste fechado
 
 1. Confirme o projeto no Dashboard. Preserve `verify_jwt: true` nas duas funções e confira políticas, grants e advisors após alterações.
 2. Para autorizar alguém, confirme por canal confiável que a pessoa controla o e-mail, prepare sua conta com senha em **Authentication → Users** e gerencie o e-mail normalizado em `private.study_beta_invites` pelo SQL Editor restrito. A linha precisa estar com `enabled = true` e a conta com e-mail confirmado. Não publique a lista nem credenciais. O formulário do app oferece somente entrada; sem SMTP, definição ou recuperação de senha deve ser tratada pelo operador no Dashboard seguro.
 3. O cliente usa `dist/study-config.js` no projeto local, ou `study-config.js` na raiz publicada. Apenas URL do projeto e chave **publishable** (`sb_publishable_…`) pertencem ao cliente. Mantenha os quatro flags atuais do estado acima durante esta fase. Nunca coloque chave `service_role`, chave secreta ou chave Gemini no frontend.
-4. A IA lê `ai_enabled` e `model` da linha única em `private.study_runtime_config`, por RPC autenticada e restrita a convidados. O estado atual é `true` e `gemini-3.6-flash`; `GEMINI_MODEL` não é mais lida. Para pausar a IA, defina `ai_enabled = false`; para trocar modelo, confira antes disponibilidade e modalidade gratuita. Não existe fallback automático.
+4. A IA lê `ai_enabled` e `model` da linha única em `private.study_runtime_config`, por RPC autenticada e restrita a convidados. O estado atual é `true` e `gemini-3.5-flash-lite`; `GEMINI_MODEL` não é lida. Para pausar a IA, defina `ai_enabled = false`. O handler permite somente `gemini-3.5-flash-lite`, `gemini-3.6-flash` e `gemini-3.8-flash`; confira disponibilidade e modalidade gratuita antes de mudar o principal. O alternativo é 3.6 quando o principal é 3.5-lite, e 3.5-lite quando o principal é 3.6/3.8. Não há fallback pago.
 5. Segredos são geridos em **Edge Functions → Secrets** no Dashboard, nunca em chat, README, commit ou GitHub Pages.
 
 | Variável da função | Contrato atual |
@@ -70,8 +70,8 @@ O teste privado já está habilitado. Os itens abaixo são requisitos para abert
 | Cadastro e e-mails | SMTP real, confirmação, redirects exatos, mensagens e limites de reenvio. |
 | Recuperação | Links válidos/expirados, nova senha e retorno à conta, depois de habilitar SMTP e o fluxo público. |
 | Dois navegadores | Sincronização por recarga, conflito sem perda de texto, exportação e cópia de notas locais sem apagar originais. Não há atualização em tempo real. |
-| Banco | Concluir a execução integral v10 de `verify-rls.sql`; as tentativas desta etapa expiraram/foram canceladas. |
-| Gemini e limites | Ampliar cenários de cotas, concorrência, falhas e lacunas; uma resposta real já foi comprovada por HTTP. |
+| Banco | Nova execução integral de `verify-rls.sql`; o último PASS é v9, as tentativas v10 expiraram/foram canceladas e não houve execução integral v11. |
+| Gemini e limites | Ampliar cenários de cotas e concorrência; respostas gerais e com fontes foram comprovadas por HTTP, e falhas/retries por testes locais. |
 | PDF e DOCX no navegador | PDF com texto, digitalizado, com senha, limites, falha de CDN e Word real; revisão sem salvamento automático. |
 | Notebook, iPad e acessibilidade | Layout, teclado, foco, toque, seletor de arquivos, download, sessão e avisos com tecnologia assistiva em navegador real. |
 
@@ -79,20 +79,26 @@ O teste privado já está habilitado. Os itens abaixo são requisitos para abert
 
 Até 500 notas por conta; título de 120 caracteres, assunto de 80 e texto de 100 mil. Importação de até 10 MB, PDF com até 100 páginas; DOCX tem verificações adicionais de ZIP, tamanho expandido, macros e XML. Sem OCR ou preservação de imagens, tabelas, fórmulas e layout.
 
-Uma pergunta tem até 2 mil caracteres e uma a cinco notas. A seleção textual classifica trechos de 1.600 caracteres, com sobreposição de 200, até oito trechos e no máximo quatro de uma nota; pode deixar partes das fontes fora do envio. Seguem também no máximo as quatro mensagens anteriores válidas, com até 2 mil caracteres cada. O cliente remove as mais antigas do envio quando necessário para manter a requisição em até 18 mil bytes UTF-8; pergunta e histórico da interface são preservados. Não há pesquisa na internet ou acesso automático ao restante do caderno.
+Uma pergunta tem até 2 mil caracteres. No fluxo integrado, `noteIds` pode estar vazio: `useNotebook: false` faz uma pergunta geral ou usa somente o contexto autorizado. Com `useNotebook: true`, a busca filtra `user_id` pelo usuário autenticado e usa OR de palavras sanitizadas da pergunta nos campos título, assunto e corpo, limitando a cinco notas por atualização mais recente. Sem correspondência, usa as cinco notas mais recentes do mesmo dono. O fluxo legado aceita seleção explícita de uma a cinco notas por UUID, verificando disponibilidade e propriedade; essa seleção prevalece sobre a busca.
+
+A seleção textual produz até oito trechos de 1.600 caracteres, com sobreposição de 200 e no máximo quatro por nota. `context` aceita no máximo uma fonte `page` e uma `draft`, cada uma com título de até 160 caracteres e corpo de até 6 mil. Há até dez fontes numeradas no total; trechos podem deixar partes das fontes fora do envio. O contexto da página inclui conteúdo visível, perguntas e alternativas, sem respostas ainda não reveladas. O rascunho e sua prévia acompanham operações do editor e mudanças de página; nada é enviado durante a digitação. Cada envio exige confirmação, desmarcada quando o contexto muda.
+
+Seguem no máximo quatro mensagens anteriores válidas de até 2 mil caracteres. O cliente `chat` mantém a requisição em até 58 mil bytes UTF-8, removendo primeiro as mensagens mais antigas e depois reduzindo contexto se necessário, sem alterar o histórico exibido ou a pergunta. O servidor lê o corpo em streaming e rejeita mais de 60 mil bytes. O cliente legado `ask` conserva o orçamento de 18 mil bytes. Conversas ficam somente na memória da aba, não no backend: fechar o painel as preserva; recarregar, sair ou mudar de conta as limpa.
+
+Para falhas de rede ou HTTP 404, 408, 500, 502, 503 e 504, o provedor recebe no máximo duas tentativas no principal e uma no alternativo gratuito. Há backoff de 700/1.400 ms com jitter de até 249 ms, prazo de 43 segundos para o conjunto de chamadas ao provedor e limite de 18 segundos por chamada. HTTP 429, 400, 401 e 403 encerram sem retry. Os limites abrangem a etapa Gemini; autenticação, banco e rede também afetam o tempo total da requisição. O cliente espera até 55 segundos pela Edge Function. Não há pesquisa externa nem alteração de notas pelo assistente.
 
 São até 20 tentativas por conta e 200 globais por dia, contadas antes da chamada ao provedor; uma falha posterior pode consumir tentativa. Esses limites não substituem as cotas do Gemini. Contadores guardam usuário, dia e quantidade; linhas anteriores a sete dias são removidas na próxima execução do contador. Conversas não são persistidas pelo backend; logs e backups dos provedores ainda exigem política de retenção para o lançamento público.
 
 ## Evidência disponível
 
-A integração HTTP real v10, com contas descartáveis, passou em login por senha, convite e negação a não convidados, criação, leitura e edição de notas, versão e conflito, isolamento entre donos, renovação de sessão, resposta efetiva do Gemini com citação `[1]` e exclusão de conta. A evidência sanitizada está em `.impeccable/review/v10-runtime-evidence.json` no projeto local. Ao final foram confirmados zero usuários e convites sintéticos; tabelas/RPCs temporárias e `pg_net` foram removidos. O checker temporário foi substituído por resposta inerte HTTP 410, v8, com `verify_jwt: true`.
+A integração HTTP real v11 passou em login, salvamento de nota, pergunta geral sem notas e envio conjunto de nota, rascunho e página. O Gemini identificou o fato exclusivo do rascunho lilás e o conceito da nota com citações, usando `gemini-3.5-flash-lite`; a pergunta geral também respondeu com esse modelo. A evidência sanitizada está em `.impeccable/review/v11-runtime-evidence.json` no projeto local. A limpeza confirmou zero usuários e convites sintéticos, sem tabelas/RPCs temporárias ou `pg_net`. O checker temporário está inerte, retorna HTTP 410, v10, com `verify_jwt: true`. `study-assistant` v11 e `study-account` v9 preservam verificação JWT habilitada.
 
-A execução completa de `verify-rls.sql` passou na v9 com dados sintéticos e rollback. As tentativas v10 expiraram no conector (`requestState expired`) ou foram canceladas: **não são PASS**. A integração HTTP v10 é evidência distinta e não comprova todos os limites sob concorrência.
+A integração HTTP real v10 permanece evidência histórica de convites e negação a não convidados, criação/leitura/edição de notas, versão/conflito, isolamento entre donos, renovação de sessão e exclusão de conta. A execução completa de `verify-rls.sql` passou na v9 com dados sintéticos e rollback. As tentativas v10 expiraram no conector (`requestState expired`) ou foram canceladas: **não são PASS**. Não houve nova execução integral na v11. As integrações HTTP são evidência distinta e não comprovam todos os limites sob concorrência.
 
-Os advisors atuais registram três INFO de tabelas privadas com RLS sem políticas e sem grants aos clientes, compatíveis com negação por padrão, e um WARN de proteção contra senhas vazadas desabilitada. Nenhuma configuração paga foi alterada.
+Os advisors registrados têm três INFO de tabelas privadas com RLS sem políticas e sem grants aos clientes, compatíveis com negação por padrão, e um WARN de proteção contra senhas vazadas desabilitada. Nenhuma configuração paga foi alterada.
 
-Na v10 passaram os testes locais `study-assistant.mjs`, `study-account.cjs` e `study-space.cjs`: HTTP/provedores simulados nos dois primeiros e harness DOM no controlador. Há regressão de histórico longo e UTF-8 para o limite de 18 mil bytes, mantendo pergunta e histórico da interface. Os resultados v9 de `study-import.cjs`, `study-flows.cjs` e `simulation-flows.cjs` continuam como evidência histórica; importação usa ZIP real com JSZip e DOM XML simulado. PDF.js e parsing em navegador não foram testados.
+Na v11 passaram os testes locais `study-assistant.mjs`, `study-account.cjs`, `assistant-ui.cjs`, `study-space.cjs`, `simulation-flows.cjs`, `clinical-mouth-2d.cjs`, `simulation-ui.cjs` e `study-flows.cjs`, além da rasterização de 34 estados SVG exatos em 700px e 350px via `render-mouth-2d.py`. HTTP/provedores simulados e harness DOM cobrem perguntas sem notas, fontes/busca do dono, limites UTF-8, falhas transitórias, alternativo gratuito e atualização de contexto. Os testes de importação v9 são históricos, com ZIP real via JSZip e XML DOM simulado; PDF.js e parsing em navegador não foram testados.
 
-A revisão independente final v10 emitiu **SHIP** no escopo de código estático, markup e evidência HTTP, após corrigir o envio de histórico longo; não avaliou acabamento visual em navegador. `.impeccable/review/v10-markup/` contém somente HTML de conta e caderno; não houve screenshots ou novos rasters. A revisão v9 deu SHIP para markup/CSS estático, controladores, semântica dos dados e prévia inativa; esse resultado não cobre a ativação v10. Não há homologação de navegador, iPad real, tecnologia assistiva ou entrega de e-mail nesta etapa.
+A primeira revisão independente v11 pediu correções da prévia de rascunho desatualizada e do contexto ausente em casos breves, questões e flashcards. Após as correções, a revisão focada emitiu **SHIP** com ambos resolvidos; esse veredito cobre as duas correções. A revisão inicial examinou código estático, markup, diagramas e evidência HTTP. `v11-markup/` contém somente HTML sintético, e `v11-new-case-diagrams.png` é uma folha de diagramas, não uma captura do app. Lançador/detector estavam ausentes após uma tentativa de cada; não havia ferramentas de controle de navegador JavaScript/cua. Layout em navegador, dois navegadores, iPad real, tecnologia assistiva, SMTP/recuperação e PDF.js real seguem sem homologação.
 
 Referências: [Supabase Auth SMTP](https://supabase.com/docs/guides/auth/auth-smtp), [redirects](https://supabase.com/docs/guides/auth/redirect-urls), [API keys](https://supabase.com/docs/guides/api/api-keys), [Edge Function secrets](https://supabase.com/docs/guides/functions/secrets), [termos do Gemini](https://ai.google.dev/gemini-api/terms) e [preços/cotas](https://ai.google.dev/gemini-api/docs/pricing).
