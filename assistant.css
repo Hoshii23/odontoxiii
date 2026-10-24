@@ -6,3 +6,5 @@
 @media(prefers-reduced-motion:no-preference){.tooth-ai-launcher{transition:background-color .18s ease-out}}
 
 @media(min-width:900px) and (max-width:1200px){.tooth-ai-visible .module-grid{grid-template-columns:1fr}}
+
+.xii-sources{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);font-size:13px}.xii-sources h4{margin:0 0 10px;font-size:13px}.xii-sources ul{margin:0;padding-left:18px}.xii-sources li{margin:12px 0;line-height:1.65;overflow-wrap:anywhere}.xii-sources small{display:block;color:var(--muted);font-size:12px;margin-top:4px}.xii-sources p,.xii-evidence-note{font-size:12px;line-height:1.7;color:var(--muted)}.study-ai-settings{margin:26px 0;padding:22px 0;border-top:1px solid var(--line)}.study-ai-settings h2{margin-top:0}.atlas-coming-soon{max-width:860px;background:var(--paper);padding:30px;border-radius:16px;margin-top:26px}.atlas-coming-soon h2{font-size:25px;margin:0 0 14px}.atlas-coming-soon p{max-width:65ch;line-height:1.85;color:var(--reading-ink);margin-bottom:24px}

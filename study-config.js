@@ -8,5 +8,6 @@ window.ODONTOXIII_CONFIG = Object.freeze({
   controllerName: '',
   privacyEmail: '',
   legalVersion: '2026-10-23',
+  aiConsentVersion: '2026-10-24',
   legalReady: false
 });

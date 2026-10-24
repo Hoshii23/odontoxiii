@@ -12,7 +12,7 @@
   async function raw(path,{method='GET',body,token,headers={}}={}){
     if(!configured())throw new StudyError('As contas ainda estão em preparação. Suas anotações locais continuam disponíveis.');
     let response;
-    try{response=await fetch(cfg.supabaseUrl+path,{method,headers:{apikey:cfg.supabasePublishableKey,...(token?{Authorization:'Bearer '+token}:{}),...(body!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(path.startsWith('/functions/')?55000:25000),cache:'no-store',referrerPolicy:'no-referrer'});}catch{throw new StudyError('Não foi possível conectar. Confira a internet e tente novamente; seu texto permanece no editor.');}
+    try{response=await fetch(cfg.supabaseUrl+path,{method,headers:{apikey:cfg.supabasePublishableKey,...(token?{Authorization:'Bearer '+token}:{}),...(body!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(path.startsWith('/functions/')?70000:25000),cache:'no-store',referrerPolicy:'no-referrer'});}catch{throw new StudyError('Não foi possível conectar. Confira a internet e tente novamente; seu texto permanece no editor.');}
     const value=response.status===204?null:await response.json().catch(()=>null);
     if(!response.ok){const code=value?.code||value?.error_code||'';const messages={invalid_credentials:'E-mail ou senha incorretos.',email_not_confirmed:'Confirme seu e-mail antes de entrar.',weak_password:'Use uma senha mais forte, com pelo menos 12 caracteres.',over_email_send_rate_limit:'Limite de e-mails atingido. Aguarde antes de tentar novamente.',user_already_exists:'Confira seu e-mail ou tente entrar na conta existente.'};throw new StudyError(messages[code]||value?.message?.startsWith('ODONTO:')&&value.message.slice(7)|| (response.status===429?'Limite temporário atingido. Aguarde e tente novamente.':response.status===401?'Sua sessão expirou. Entre novamente.':response.status===409?'Esta anotação mudou em outro aparelho. Recarregue as notas antes de salvar.':'Não foi possível concluir a ação. Tente novamente ou procure o suporte.'),response.status,code);}
     return value;
@@ -46,22 +46,23 @@
     async recover(email){await raw('/auth/v1/recover?redirect_to='+encodeURIComponent(redirect()),{method:'POST',body:{email}});},
     async password(password){await request('/auth/v1/user',{method:'PUT',body:{password}});window.ODONTOXIII_RECOVERY=false;},
     async signOut(){try{if(session)await request('/auth/v1/logout?scope=global',{method:'POST'});}finally{clear();}},
-    async profile(){return (await request('/rest/v1/study_profiles?select=terms_version,privacy_version,adult_attested,accepted_at&limit=1'))?.[0]||null;},
-    async accept(){const body={terms_version:cfg.legalVersion,privacy_version:cfg.legalVersion,adult_attested:true};const current=await api.profile();if(current)await request('/rest/v1/study_profiles?user_id=eq.'+session.user.id,{method:'PATCH',body});else await request('/rest/v1/study_profiles',{method:'POST',body:{...body,user_id:session.user.id}});},
+    async profile(){return (await request('/rest/v1/study_profiles?select=terms_version,privacy_version,adult_attested,accepted_at,brazil_attested,ai_consent_version,ai_consent_at&limit=1'))?.[0]||null;},
+    async accept({activateAI=false}={}){const body={terms_version:cfg.legalVersion,privacy_version:cfg.legalVersion,adult_attested:true,brazil_attested:activateAI,ai_consent_version:activateAI?cfg.aiConsentVersion:null};const current=await api.profile();if(current)await request('/rest/v1/study_profiles?user_id=eq.'+session.user.id,{method:'PATCH',body});else await request('/rest/v1/study_profiles',{method:'POST',body:{...body,user_id:session.user.id}});},
+    async setAI(enabled){await request('/rest/v1/study_profiles?user_id=eq.'+session.user.id,{method:'PATCH',body:{brazil_attested:!!enabled,ai_consent_version:enabled?cfg.aiConsentVersion:null}});},
     async list(){return request('/rest/v1/study_notes?select=id,title,body,subject,kind,version,created_at,updated_at&order=updated_at.desc&limit=500');},
     async save(note){const body={title:note.title,body:note.body,subject:note.subject||'',kind:note.kind||'nota'};if(note.id){const rows=await request('/rest/v1/study_notes?id=eq.'+encodeURIComponent(note.id)+'&version=eq.'+encodeURIComponent(note.version),{method:'PATCH',body,headers:{Prefer:'return=representation'}});if(!rows?.length)throw new StudyError('Esta anotação mudou ou foi excluída em outro aparelho. Seu texto foi mantido. Recarregue as notas para conferir.',409);return rows[0];}const rows=await request('/rest/v1/study_notes',{method:'POST',body:{...body,user_id:session.user.id},headers:{Prefer:'return=representation'}});return rows[0];},
     async remove(id){const rows=await request('/rest/v1/study_notes?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{Prefer:'return=representation'}});if(!rows?.length)throw new StudyError('A anotação já foi excluída ou não está acessível. Recarregue a lista.',409);},
     async importLocal(notes){for(const n of notes.slice(0,500)){await request('/rest/v1/study_notes?on_conflict=user_id,source_key',{method:'POST',body:{user_id:session.user.id,title:n.title.slice(0,120),body:n.body.slice(0,20000),subject:'Importado deste aparelho',kind:'nota',source_key:'local:'+n.id},headers:{Prefer:'resolution=ignore-duplicates'}});}},
     async ask(noteIds,question,conversation){
       const history=(Array.isArray(conversation)?conversation:[]).slice(-4).filter(m=>m&&['user','assistant'].includes(m.role)&&typeof m.text==='string').map(m=>({role:m.role,text:m.text.slice(0,2000)}));
-      const body={noteIds,question,conversation:history,consent:{version:cfg.legalVersion,nonPersonal:true,brazilAdult:true}};
+      const body={noteIds,question,conversation:history};
       while(history.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>18000)history.shift();
       return request('/functions/v1/study-assistant',{method:'POST',body});
     },
     async chat({question,context=[],useNotebook=false,conversation=[]}){
       const history=(Array.isArray(conversation)?conversation:[]).slice(-4).filter(m=>m&&['user','assistant'].includes(m.role)&&typeof m.text==='string').map(m=>({role:m.role,text:m.text.slice(0,2000)}));
       const sources=context.filter(c=>c&&['page','draft'].includes(c.kind)).slice(0,2).map(c=>({kind:c.kind,title:String(c.title||'').slice(0,160),body:String(c.body||'').slice(0,6000)}));
-      const body={noteIds:[],question,useNotebook,context:sources,conversation:history,consent:{version:cfg.legalVersion,nonPersonal:true,brazilAdult:true}};
+      const body={noteIds:[],question,useNotebook,context:sources,conversation:history};
       while(history.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>58000)history.shift();
       while(sources.length&&new TextEncoder().encode(JSON.stringify(body)).byteLength>58000){const largest=sources.reduce((a,b)=>a.body.length>b.body.length?a:b);largest.body=largest.body.slice(0,Math.floor(largest.body.length*.8));if(!largest.body.length)sources.splice(sources.indexOf(largest),1);}
       return request('/functions/v1/study-assistant',{method:'POST',body});
